@@ -1,4 +1,5 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
+import path from 'path';
 
 const options: TypeOrmModuleOptions = {
   type: process.env.TYPEORM_CONNECTION,
@@ -7,8 +8,8 @@ const options: TypeOrmModuleOptions = {
   username: process.env.TYPEORM_USERNAMME,
   password: process.env.TYPEORM_PASSWORD,
   database: process.env.TYPEORM_DATABASE,
-  entities: [__dirname + '../**/*.entity{.ts,.js}'],
-  migrations: [__dirname + '../**/*.migration{.ts,.js}'],
+  entities: [path.resolve(__dirname, '..', 'entitys', '*')],
+  migrations: [path.resolve(__dirname, '..', 'migrations', '*')],
   synchronize: true,
   logging: true,
 } as TypeOrmModuleOptions;
