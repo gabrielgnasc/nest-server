@@ -2,9 +2,12 @@ version: '3'
 services:
   ### Mysql container
   mysql:
+    container_name: mysql
     image: mysql:latest
     ports:
-      - '3306:3306'
+      - 3306:3306
+    expose:
+      - 3306
     volumes:
       - /var/lib/mysql:/var/lib/mysql
     environment:
@@ -15,7 +18,10 @@ services:
       MYSQL_ROOT_HOST: '%' # needs to be enclosed with quotes
 
   app:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nest-api
     command: npm run start:dev
     ports:
       - '3000:3000'

@@ -5,7 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { ControllersModule } from './controllers/controllers.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), ControllersModule],
+  imports: [ConfigModule.forRoot({ isGlobal: true }), ControllersModule],
   controllers: [AppController],
   providers: [AppService],
 })

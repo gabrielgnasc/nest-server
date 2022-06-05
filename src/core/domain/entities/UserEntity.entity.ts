@@ -5,7 +5,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-@Entity()
+@Entity('users')
 export class UsersEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
