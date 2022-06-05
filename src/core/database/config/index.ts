@@ -9,7 +9,9 @@ const options: TypeOrmModuleOptions = {
   password: process.env.TYPEORM_PASSWORD,
   database: process.env.TYPEORM_DATABASE,
   entities: [path.resolve(__dirname, '..', 'entitys', '*')],
-  migrations: [path.resolve(__dirname, '..', 'migrations', '*')],
+  migrations: [
+    path.resolve(__dirname, '..', '..', 'domain', 'migrations', '*'),
+  ],
   synchronize: true,
   logging: true,
 } as TypeOrmModuleOptions;
