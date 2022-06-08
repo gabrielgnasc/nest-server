@@ -6,11 +6,7 @@ import { IUserRepository } from '../../core/abstracts/user-repository.abstract';
 export class UserService {
   constructor(private readonly userRepository: IUserRepository) {}
 
-  findAll() {
-    return this.userRepository.findAll();
-  }
-
-  create(user: User) {
-    return null;
+  create(user: User): Promise<User> {
+    return Promise.resolve(user);
   }
 }

@@ -9,6 +9,10 @@ export class CreateUserDTO {
   @IsEmail({ message: 'The email is not valid' })
   email: string;
 
+  @IsNotEmpty({ message: 'The login cannot be empty.' })
+  @IsString({ message: 'The login must to be a string' })
+  login: string;
+
   @IsNotEmpty({ message: 'The name cannot be empty.' })
   @Length(6, 20, { message: 'The password must be 6 to 20 characters' })
   password: string;
