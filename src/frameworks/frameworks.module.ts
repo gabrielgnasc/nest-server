@@ -3,7 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { getDatabaseSettings } from './database/config';
-import { UserRepositoryModule } from './repositories/user-repository/user-repository.module';
+import { UserRepositoryModule } from './database/repositories/user-repository/user-repository.module';
 
 @Module({
   imports: [

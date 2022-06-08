@@ -10,8 +10,8 @@ export function getDatabaseSettings(configService: ConfigService) {
       username: configService.get('TYPEORM_USERNAMME'),
       password: configService.get('TYPEORM_PASSWORD'),
       database: configService.get('TYPEORM_DATABASE'),
-      entities: ['dist/**/*.entity{.ts,.js}'],
-      migrations: ['dist/**/*.migration{.ts,.js}'],
+      entities: ['../**/*.entity{.ts,.js}'],
+      migrations: ['../**/*.migration{.ts,.js}'],
       synchronize: true,
       logging: true,
     } as TypeOrmModuleOptions;
