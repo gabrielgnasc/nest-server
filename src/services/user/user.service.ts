@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { IUserRepository } from 'src/core/abstracts/user-repository.abstract';
+import { User } from 'src/core/entities/User.entity';
+import { IUserRepository } from '../../core/abstracts/user-repository.abstract';
 
 @Injectable()
 export class UserService {
@@ -7,5 +8,9 @@ export class UserService {
 
   findAll() {
     return this.userRepository.findAll();
+  }
+
+  create(user: User) {
+    return null;
   }
 }
