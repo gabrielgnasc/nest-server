@@ -1,4 +1,4 @@
-import { UserDTO } from '../dtos/user/user.dto';
+import { UserDTO } from '../../common/dtos/user/user.dto';
 
 export abstract class IUserRepository {
   abstract findAll(): Promise<UserDTO[]>;

@@ -1,16 +1,13 @@
 import { Mapper } from '../../abstracts/mapper';
-import { CreateUserDTO } from '../../../common/dtos/user/create-user.dto';
 import { UserDTO } from '../../../common/dtos/user/user.dto';
 import { User } from '../../entities/User.entity';
+import { UpdateUserDTO } from '../../../common/dtos/user/update-user.dto';
 
-export class CreateUserMapper extends Mapper<CreateUserDTO, User, UserDTO> {
-  public mapFrom(param: CreateUserDTO): User {
+export class UpdateUserMapper extends Mapper<UpdateUserDTO, User, UserDTO> {
+  public mapFrom(param: UpdateUserDTO): User {
     const user = new User();
     user.name = param.name;
     user.email = param.email;
-    user.login = param.login;
-    user.password = param.password;
-
     return user;
   }
 

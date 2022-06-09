@@ -3,7 +3,7 @@ import { UserController } from './user.controller';
 import { UserService } from '../../services/user/user.service';
 import { User } from '../../core/entities/User.entity';
 import { CreateUserMapper } from '../../core/mappers/user/create-user.mapper';
-import { UserDTO } from '../../core/dtos/user/user.dto';
+import { NotAcceptableException } from '@nestjs/common';
 
 describe('UserController', () => {
   let userController: UserController;
@@ -17,8 +17,9 @@ describe('UserController', () => {
       login: dto.login,
     })),
     update: jest.fn((id, dto) => ({
-      id: id,
+      id,
       ...dto,
+      login: 'any_login',
     })),
   };
 
@@ -49,19 +50,22 @@ describe('UserController', () => {
     };
 
     it('should throw an exception', () => {
-      jest.spyOn(userService, 'create').mockRejectedValueOnce(new Error());
-      expect(userController.create({} as any)).rejects.toThrowError();
+      jest.spyOn(userService, 'create').mockImplementationOnce(() => {
+        throw new Error();
+      });
+      expect(userController.create(userCreate)).rejects.toThrowError();
     });
 
-    it('should throw an exception', () => {
-      jest.spyOn(userService, 'create').mockRejectedValueOnce(new Error());
-      expect(userController.create({} as any)).rejects.toThrowError();
-    });
+    it('should status 406 when email already exists', async () => {
+      jest.spyOn(userService, 'create').mockImplementationOnce(() => {
+        throw new NotAcceptableException('Email already exists!');
+      });
 
-    it('should UserService.Create is called with User Entity', async () => {
-      await userController.create(userCreate);
-      const paramsCreate = mockUserService.create.mock.lastCall[0];
-      expect(paramsCreate).toBeInstanceOf(User);
+      try {
+        await userController.create(userCreate);
+      } catch (error) {
+        expect(error.status).toBe(406);
+      }
     });
 
     it('should return user if created successfully', async () => {
@@ -75,6 +79,55 @@ describe('UserController', () => {
       });
 
       expect(mockUserService.create).toHaveBeenCalledWith(userCreate);
+    });
+  });
+
+  describe('update', () => {
+    const userUpdate = {
+      name: 'any_name',
+      email: 'any_email@mail.com',
+    };
+
+    it('should throw an exception', async () => {
+      const spy = jest
+        .spyOn(userService, 'update')
+        .mockImplementationOnce(() => {
+          throw new Error();
+        });
+
+      expect(
+        userController.update('any_id', userUpdate),
+      ).rejects.toThrowError();
+
+      expect(spy).toHaveBeenCalled();
+    });
+
+    it('should return status 406 when email updated already in use', async () => {
+      const spy = jest
+        .spyOn(userService, 'update')
+        .mockImplementationOnce(() => {
+          throw new NotAcceptableException('Email already exists!');
+        });
+
+      try {
+        await userController.update('any_id', userUpdate);
+      } catch (error) {
+        expect(error.status).toBe(406);
+      }
+      expect(spy).toHaveBeenCalled();
+    });
+
+    it('should return user if updated successfully', async () => {
+      const result = await userController.update('any_id', userUpdate);
+
+      expect(result).toEqual({
+        id: 'any_id',
+        name: 'any_name',
+        login: 'any_login',
+        email: 'any_email@mail.com',
+      });
+
+      expect(mockUserService.update).toHaveBeenCalledWith('any_id', userUpdate);
     });
   });
 });
