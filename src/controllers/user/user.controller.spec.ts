@@ -4,6 +4,9 @@ import { UserService } from '../../services/user/user.service';
 import { User } from '../../core/entities/User.entity';
 import { CreateUserMapper } from '../../core/mappers/user/create-user.mapper';
 import { NotAcceptableException } from '@nestjs/common';
+import { UpdateUserDTO } from '../../common/dtos/user/update-user.dto';
+import { CreateUserDTO } from '../../common/dtos/user/create-user.dto';
+import { UpdatePasswordDTO } from '../../common/dtos/user/update-password.dto';
 
 describe('UserController', () => {
   let userController: UserController;
@@ -21,6 +24,9 @@ describe('UserController', () => {
       ...dto,
       login: 'any_login',
     })),
+    updatePassword: jest.fn((id, dto) => {
+      return null;
+    }),
   };
 
   beforeEach(async () => {
@@ -41,13 +47,12 @@ describe('UserController', () => {
     expect(userService).toBeDefined();
   });
 
-  describe('create', () => {
-    const userCreate = {
-      name: 'any_name',
-      login: 'any_login',
-      email: 'any_email@mail.com',
-      password: 'any_password',
-    };
+  describe('create user', () => {
+    const userCreate = new CreateUserDTO();
+    userCreate.name = 'any_name';
+    userCreate.login = 'any_login';
+    userCreate.email = 'any_email@mail.com';
+    userCreate.password = 'any_password';
 
     it('should throw an exception', () => {
       jest.spyOn(userService, 'create').mockImplementationOnce(() => {
@@ -82,11 +87,10 @@ describe('UserController', () => {
     });
   });
 
-  describe('update', () => {
-    const userUpdate = {
-      name: 'any_name',
-      email: 'any_email@mail.com',
-    };
+  describe('update user', () => {
+    const userUpdate = new UpdateUserDTO();
+    userUpdate.name = 'any_name';
+    userUpdate.email = 'any_email@mail.com';
 
     it('should throw an exception', async () => {
       const spy = jest
@@ -128,6 +132,36 @@ describe('UserController', () => {
       });
 
       expect(mockUserService.update).toHaveBeenCalledWith('any_id', userUpdate);
+    });
+  });
+
+  describe('update password', () => {
+    const updatePassword = new UpdatePasswordDTO();
+    updatePassword.password = 'any_password';
+    updatePassword.newPassword = 'new_password';
+
+    it('should throw an exception', async () => {
+      const spy = jest
+        .spyOn(userService, 'updatePassword')
+        .mockImplementationOnce(() => {
+          throw new Error();
+        });
+
+      expect(
+        userController.updatePassword('any_id', updatePassword),
+      ).rejects.toThrowError();
+
+      expect(spy).toHaveBeenCalled();
+    });
+
+    it('should update is succefully', async () => {
+      const spy = jest.spyOn(userController, 'updatePassword');
+      const updatePassword = new UpdatePasswordDTO();
+      updatePassword.password = 'any_password';
+      updatePassword.newPassword = '';
+
+      await userController.updatePassword('any_id', updatePassword);
+      expect(spy).toHaveBeenCalledWith('any_id', updatePassword);
     });
   });
 });

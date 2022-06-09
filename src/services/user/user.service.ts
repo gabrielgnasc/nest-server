@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { response } from 'express';
 import { User } from 'src/core/entities/User.entity';
 import { IUserRepository } from '../../core/abstracts/user-repository.abstract';
 
@@ -23,5 +22,9 @@ export class UserService {
 
   findById(id: string): Promise<User> {
     return Promise.resolve({} as any);
+  }
+
+  updatePassword(id: string, user: any): Promise<void> {
+    return Promise.resolve();
   }
 }

@@ -13,7 +13,7 @@ export class CreateUserDTO {
   @IsString({ message: 'The login must to be a string' })
   login: string;
 
-  @IsNotEmpty({ message: 'The name cannot be empty.' })
+  @IsNotEmpty({ message: 'The password cannot be empty.' })
   @Length(6, 20, { message: 'The password must be 6 to 20 characters' })
   password: string;
 }

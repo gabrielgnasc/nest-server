@@ -3,6 +3,7 @@ import { UserDTO } from '../../common/dtos/user/user.dto';
 import { CreateUserDTO } from '../../common/dtos/user/create-user.dto';
 import { UserService } from '../../services/user/user.service';
 import { UpdateUserDTO } from '../../common/dtos/user/update-user.dto';
+import { UpdatePasswordDTO } from '../../common/dtos/user/update-password.dto';
 
 @Controller('user')
 export class UserController {
@@ -16,5 +17,13 @@ export class UserController {
   @Put(':id')
   async update(@Param('id') id: string, @Body() userUpdate: UpdateUserDTO) {
     return this.userService.update(id, userUpdate);
+  }
+
+  @Put(':id')
+  async updatePassword(
+    @Param('id') id: string,
+    @Body() updatePassword: UpdatePasswordDTO,
+  ) {
+    return this.userService.updatePassword(id, updatePassword);
   }
 }
