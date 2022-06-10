@@ -27,4 +27,8 @@ export class UserService {
   updatePassword(id: string, user: any): Promise<void> {
     return Promise.resolve();
   }
+
+  recoverPassword(email: string): Promise<string> {
+    return Promise.resolve({} as any);
+  }
 }

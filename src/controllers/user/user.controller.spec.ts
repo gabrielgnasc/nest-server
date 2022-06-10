@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserController } from './user.controller';
 import { UserService } from '../../services/user/user.service';
-import { User } from '../../core/entities/User.entity';
 import { CreateUserMapper } from '../../core/mappers/user/create-user.mapper';
 import { NotAcceptableException } from '@nestjs/common';
 import { UpdateUserDTO } from '../../common/dtos/user/update-user.dto';
@@ -27,6 +26,7 @@ describe('UserController', () => {
     updatePassword: jest.fn((id, dto) => {
       return null;
     }),
+    recoverPassword: jest.fn((email) => ''),
   };
 
   beforeEach(async () => {
@@ -154,6 +154,18 @@ describe('UserController', () => {
       expect(spy).toHaveBeenCalled();
     });
 
+    it('should return 406 if old password dont match', async () => {
+      jest.spyOn(userService, 'updatePassword').mockImplementationOnce(() => {
+        throw new NotAcceptableException('password dont match');
+      });
+
+      try {
+        await userController.updatePassword('any_id', updatePassword);
+      } catch (error) {
+        expect(error.status).toBe(406);
+      }
+    });
+
     it('should update is succefully', async () => {
       const spy = jest.spyOn(userController, 'updatePassword');
       const updatePassword = new UpdatePasswordDTO();
@@ -162,6 +174,39 @@ describe('UserController', () => {
 
       await userController.updatePassword('any_id', updatePassword);
       expect(spy).toHaveBeenCalledWith('any_id', updatePassword);
+    });
+  });
+
+  describe('recover password', () => {
+    it('should throw an exception', () => {
+      jest.spyOn(userService, 'recoverPassword').mockImplementationOnce(() => {
+        throw new Error();
+      });
+      expect(
+        userController.recoverPassword('any_email@mail.com'),
+      ).rejects.toThrowError();
+    });
+
+    it('should return 406 if email is not registered', async () => {
+      jest.spyOn(userService, 'recoverPassword').mockImplementationOnce(() => {
+        throw new NotAcceptableException('Email is not registered');
+      });
+
+      try {
+        await userController.recoverPassword('any_email@mail.com');
+      } catch (error) {
+        expect(error.status).toBe(406);
+      }
+    });
+
+    it('should recover with success', async () => {
+      const spy = jest.spyOn(userController, 'recoverPassword');
+      await userController.recoverPassword('any_email@mail.com');
+      expect(spy).toHaveBeenCalledWith('any_email@mail.com');
+      expect(userService.recoverPassword).toHaveBeenCalledWith(
+        'any_email@mail.com',
+      );
+      expect(userService.recoverPassword).toBeDefined();
     });
   });
 });

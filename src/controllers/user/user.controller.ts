@@ -15,15 +15,23 @@ export class UserController {
   }
 
   @Put(':id')
-  async update(@Param('id') id: string, @Body() userUpdate: UpdateUserDTO) {
+  async update(
+    @Param('id') id: string,
+    @Body() userUpdate: UpdateUserDTO,
+  ): Promise<UserDTO> {
     return this.userService.update(id, userUpdate);
   }
 
-  @Put(':id')
+  @Put('updatePassword/:id')
   async updatePassword(
     @Param('id') id: string,
     @Body() updatePassword: UpdatePasswordDTO,
-  ) {
+  ): Promise<void> {
     return this.userService.updatePassword(id, updatePassword);
+  }
+
+  @Post('recoverPassword')
+  async recoverPassword(@Body() email: string): Promise<string> {
+    return this.userService.recoverPassword(email);
   }
 }
