@@ -2,10 +2,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UserController } from './user.controller';
 import { UserService } from '../../services/user/user.service';
 import { CreateUserMapper } from '../../core/mappers/user/create-user.mapper';
-import { NotAcceptableException } from '@nestjs/common';
+import { NotAcceptableException, NotFoundException } from '@nestjs/common';
 import { UpdateUserDTO } from '../../common/dtos/user/update-user.dto';
 import { CreateUserDTO } from '../../common/dtos/user/create-user.dto';
 import { UpdatePasswordDTO } from '../../common/dtos/user/update-password.dto';
+import { NotFoundError } from 'rxjs';
 
 describe('UserController', () => {
   let userController: UserController;
@@ -27,6 +28,12 @@ describe('UserController', () => {
       return null;
     }),
     recoverPassword: jest.fn((email) => ''),
+    findById: jest.fn((id) => ({
+      id: Date.now().toString(),
+      name: 'any_name',
+      login: 'any_login',
+      email: 'any_email@mail.com',
+    })),
   };
 
   beforeEach(async () => {
@@ -45,6 +52,40 @@ describe('UserController', () => {
   it('should be defined', () => {
     expect(userController).toBeDefined();
     expect(userService).toBeDefined();
+  });
+
+  describe('find user', () => {
+    it('should throw an exception', () => {
+      jest.spyOn(userService, 'findById').mockImplementationOnce(() => {
+        throw new Error();
+      });
+      expect(userController.findById('any_id')).rejects.toThrowError();
+    });
+
+    it('should status 404 when id dont exists', async () => {
+      jest.spyOn(userService, 'findById').mockImplementationOnce(() => {
+        throw new NotFoundException('user dont exists!');
+      });
+
+      try {
+        await userController.findById('any_id');
+      } catch (error) {
+        expect(error.status).toBe(404);
+      }
+    });
+
+    it('should return user if find successfully', async () => {
+      const result = await userController.findById('any_id');
+
+      expect(result).toEqual({
+        id: expect.any(String),
+        name: 'any_name',
+        login: 'any_login',
+        email: 'any_email@mail.com',
+      });
+
+      expect(mockUserService.findById).toHaveBeenCalledWith('any_id');
+    });
   });
 
   describe('create user', () => {

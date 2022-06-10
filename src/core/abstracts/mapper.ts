@@ -1,4 +1,4 @@
-export abstract class Mapper<T, R, S> {
-  public abstract mapFrom(param: T): R;
-  public abstract mapTo(param: R): S;
+export abstract class Mapper<D, E> {
+  public abstract toEntity(param: D): E;
+  public abstract toDTO(param: E): D;
 }

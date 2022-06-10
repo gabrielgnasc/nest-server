@@ -1,4 +1,4 @@
-import { Body, Controller, Inject, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
 import { UserDTO } from '../../common/dtos/user/user.dto';
 import { CreateUserDTO } from '../../common/dtos/user/create-user.dto';
 import { UserService } from '../../services/user/user.service';
@@ -8,6 +8,11 @@ import { UpdatePasswordDTO } from '../../common/dtos/user/update-password.dto';
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
+
+  @Get(':id')
+  async findById(@Param('id') id: string): Promise<UserDTO> {
+    return this.userService.findById(id);
+  }
 
   @Post()
   async create(@Body() userSignUp: CreateUserDTO): Promise<UserDTO> {
