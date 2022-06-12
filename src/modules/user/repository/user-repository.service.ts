@@ -1,25 +1,29 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IUserRepository } from '../../../../core/abstracts/user-repository.abstract';
-import { UserDTO } from '../../../../common/dtos/user/user.dto';
-import { UserEntity } from '../../../../frameworks/database/schemas/User.entity';
+import { User } from '../domain/User.entity';
+import { IUserRepository } from '../interfaces/user-repository.interface';
+
 import { UserRepository } from './user.repository';
 
 @Injectable()
 export class UserRepositoryService implements IUserRepository {
-  @InjectRepository(UserEntity)
+  @InjectRepository(User)
   private readonly userRepository: UserRepository;
 
-  findAll(): Promise<UserDTO[]> {
+  findAll(): Promise<User[]> {
     return this.userRepository.find();
   }
-  find(id: string): Promise<UserDTO> {
+
+  findByEmail(email: string): Promise<User> {
     return null;
   }
-  create(item: UserDTO): Promise<UserDTO> {
+  find(id: string): Promise<User> {
     return null;
   }
-  update(id: string, item: UserDTO): Promise<UserDTO> {
+  create(item: User): Promise<User> {
+    return null;
+  }
+  update(id: string, item: User): Promise<User> {
     return null;
   }
   delete(id: string): Promise<void> {

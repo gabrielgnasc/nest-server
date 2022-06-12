@@ -1,5 +1,5 @@
-import { CreateUserDTO } from '../../common/dtos/user/create-user.dto';
-import { User } from '../entities/User.entity';
+import { CreateUserDTO } from '../../../common/dtos/user/create-user.dto';
+import { User } from '../domain/User.entity';
 
 export abstract class IUserRepository {
   abstract findAll(): Promise<User[]>;

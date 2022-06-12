@@ -1,16 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserController } from './user.controller';
-import { UserService } from '../../services/user/user.service';
-import { CreateUserMapper } from '../../core/mappers/user/create-user.mapper';
 import { NotAcceptableException, NotFoundException } from '@nestjs/common';
-import { UpdateUserDTO } from '../../common/dtos/user/update-user.dto';
-import { CreateUserDTO } from '../../common/dtos/user/create-user.dto';
-import { UpdatePasswordDTO } from '../../common/dtos/user/update-password.dto';
-import { NotFoundError } from 'rxjs';
+import { UpdateUserDTO } from '../../../common/dtos/user/update-user.dto';
+import { CreateUserDTO } from '../../../common/dtos/user/create-user.dto';
+import { UpdatePasswordDTO } from '../../../common/dtos/user/update-password.dto';
+import { IUserService } from '../interfaces/user-service.interface';
 
 describe('UserController', () => {
   let userController: UserController;
-  let userService: UserService;
+  let userService: IUserService;
 
   const mockUserService = {
     create: jest.fn((dto) => ({
@@ -39,14 +37,19 @@ describe('UserController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UserController],
-      providers: [UserService, CreateUserMapper],
+      providers: [
+        {
+          provide: IUserService,
+          useValue: mockUserService,
+        },
+      ],
     })
-      .overrideProvider(UserService)
+      .overrideProvider(IUserService)
       .useValue(mockUserService)
       .compile();
 
     userController = module.get<UserController>(UserController);
-    userService = module.get<UserService>(UserService);
+    userService = module.get<IUserService>(IUserService);
   });
 
   it('should be defined', () => {

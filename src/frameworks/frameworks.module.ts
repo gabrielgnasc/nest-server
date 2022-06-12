@@ -2,8 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { getDatabaseSettings } from './database/config';
-import { UserRepositoryModule } from './database/repositories/user-repository/user-repository.module';
+import { getDatabaseSettings } from '../config';
 
 @Module({
   imports: [
@@ -13,8 +12,7 @@ import { UserRepositoryModule } from './database/repositories/user-repository/us
       useFactory: (configService: ConfigService) =>
         getDatabaseSettings(configService),
     }),
-    UserRepositoryModule,
   ],
-  exports: [UserRepositoryModule],
+  exports: [],
 })
 export class FrameworksModule {}

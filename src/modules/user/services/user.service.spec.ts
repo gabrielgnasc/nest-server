@@ -1,10 +1,11 @@
 import { NotAcceptableException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { CreateUserDTO } from '../../common/dtos/user/create-user.dto';
-import { UserDTO } from '../../common/dtos/user/user.dto';
-import { IUserRepository } from '../../core/abstracts/user-repository.abstract';
-import { User } from '../../core/entities/User.entity';
-import { UserMapper } from '../../core/mappers/user/user.mapper';
+import { CreateUserDTO } from '../../../common/dtos/user/create-user.dto';
+import { UserDTO } from '../../../common/dtos/user/user.dto';
+import { User } from '../domain/User.entity';
+import { IUserRepository } from '../interfaces/user-repository.interface';
+import { UserMapper } from '../mappers/user.mapper';
+
 import { UserService } from './user.service';
 
 describe('UserService', () => {

@@ -1,13 +1,13 @@
 import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
-import { UserDTO } from '../../common/dtos/user/user.dto';
-import { CreateUserDTO } from '../../common/dtos/user/create-user.dto';
-import { UserService } from '../../services/user/user.service';
-import { UpdateUserDTO } from '../../common/dtos/user/update-user.dto';
-import { UpdatePasswordDTO } from '../../common/dtos/user/update-password.dto';
+import { CreateUserDTO } from '../../../common/dtos/user/create-user.dto';
+import { UpdatePasswordDTO } from '../../../common/dtos/user/update-password.dto';
+import { UpdateUserDTO } from '../../../common/dtos/user/update-user.dto';
+import { UserDTO } from '../../../common/dtos/user/user.dto';
+import { IUserService } from '../interfaces/user-service.interface';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: IUserService) {}
 
   @Get(':id')
   async findById(@Param('id') id: string): Promise<UserDTO> {

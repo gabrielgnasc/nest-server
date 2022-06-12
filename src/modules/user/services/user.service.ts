@@ -4,10 +4,11 @@ import {
   Injectable,
   NotAcceptableException,
 } from '@nestjs/common';
-import { CreateUserDTO } from '../../common/dtos/user/create-user.dto';
-import { UserDTO } from '../../common/dtos/user/user.dto';
-import { IUserRepository } from '../../core/abstracts/user-repository.abstract';
-import { UserMapper } from '../../core/mappers/user/user.mapper';
+import { CreateUserDTO } from '../../../common/dtos/user/create-user.dto';
+import { UserDTO } from '../../../common/dtos/user/user.dto';
+import { IUserRepository } from '../interfaces/user-repository.interface';
+
+import { UserMapper } from '../mappers/user.mapper';
 
 @Injectable()
 export class UserService {
