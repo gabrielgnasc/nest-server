@@ -13,7 +13,7 @@ export class CreateUserMapper extends Mapper<CreateUserDTO, User> {
     return user;
   }
 
-  public toDTO(param: User): CreateUserDTO {
+  public fromEntity(param: User): CreateUserDTO {
     const userDTO = new CreateUserDTO();
     userDTO.name = param.name;
     userDTO.email = param.email;

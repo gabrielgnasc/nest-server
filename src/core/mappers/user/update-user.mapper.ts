@@ -11,7 +11,7 @@ export class UpdateUserMapper extends Mapper<UpdateUserDTO, User> {
     return user;
   }
 
-  public toDTO(param: User): UpdateUserDTO {
+  public fromEntity(param: User): UpdateUserDTO {
     const userDTO = new UpdateUserDTO();
     userDTO.name = param.name;
     userDTO.email = param.email;

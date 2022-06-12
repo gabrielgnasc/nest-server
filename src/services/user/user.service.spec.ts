@@ -1,5 +1,6 @@
-import { NotFoundException } from '@nestjs/common';
+import { NotAcceptableException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
+import { CreateUserDTO } from '../../common/dtos/user/create-user.dto';
 import { UserDTO } from '../../common/dtos/user/user.dto';
 import { IUserRepository } from '../../core/abstracts/user-repository.abstract';
 import { User } from '../../core/entities/User.entity';
@@ -15,6 +16,7 @@ describe('UserService', () => {
     create: jest.fn((item) => Promise.resolve(new User())),
     update: jest.fn((id) => Promise.resolve(new User())),
     delete: jest.fn((id) => Promise.resolve()),
+    findByEmail: jest.fn((dto) => Promise.resolve()),
     findAll: jest.fn(),
   };
   beforeEach(async () => {
@@ -69,9 +71,42 @@ describe('UserService', () => {
       const user = await userService.findById('any_id');
 
       expect(userRepository).toBeDefined();
-      expect(mockUserRepository.find).toHaveBeenCalledWith('any_id');
+      expect(userRepository.find).toHaveBeenCalledWith('any_id');
       expect(user).toBeInstanceOf(UserDTO);
       expect(await mockUserRepository.find('some_id')).toBeInstanceOf(User);
+    });
+  });
+
+  describe('Create user', () => {
+    const createUserDTO = new CreateUserDTO();
+    createUserDTO.email = 'any_email@mail.com';
+    createUserDTO.login = 'any_login';
+    createUserDTO.name = 'any_name';
+    createUserDTO.password = 'any_password';
+
+    it('should repository throw an exception', async () => {
+      jest.spyOn(userRepository, 'create').mockRejectedValueOnce(new Error());
+
+      expect(userService.create(createUserDTO)).rejects.toThrowError();
+    });
+
+    it('should return NotAcceptable(406) when email already exists', async () => {
+      jest
+        .spyOn(userRepository, 'findByEmail')
+        .mockImplementationOnce((dto) => dto as any);
+
+      try {
+        await userService.create(createUserDTO);
+      } catch (error) {
+        expect(error.status).toBe(406);
+      }
+    });
+
+    it('should return UserDTO if user created successfully', async () => {
+      const user = await userService.create(createUserDTO);
+      expect(userRepository).toBeDefined();
+      expect(userRepository.create).toHaveReturned();
+      expect(user).toBeInstanceOf(UserDTO);
     });
   });
 });
