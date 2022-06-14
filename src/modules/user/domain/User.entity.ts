@@ -1,9 +1,4 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('users')
 export class User {
@@ -30,4 +25,8 @@ export class User {
 
   @CreateDateColumn({ name: 'deleted_at' })
   deletedAt: Date;
+
+  newPasswordIsValid(newPassword: string) {
+    return this.password.trim() !== newPassword.trim();
+  }
 }

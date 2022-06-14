@@ -10,9 +10,9 @@ export abstract class IUserRepository {
 
   abstract findBy(userFindBy?: IUserFindBy): Promise<User>;
 
-  abstract create(item: CreateUserDTO): Promise<User>;
+  abstract create(item: User): Promise<User>;
 
-  abstract update(id: string, user: UpdateUserDTO): Promise<User>;
+  abstract update(id: string, user: User): Promise<User>;
 
   abstract delete(id: string): Promise<void>;
 }

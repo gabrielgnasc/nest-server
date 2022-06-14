@@ -1,10 +1,14 @@
 import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { CreateUserDTO } from '../../../common/dtos/user/create-user.dto';
+import { UpdatePasswordDTO } from '../../../common/dtos/user/update-password.dto';
 import { UpdateUserDTO } from '../../../common/dtos/user/update-user.dto';
 import { UserDTO } from '../../../common/dtos/user/user.dto';
 import { User } from '../domain/User.entity';
 import { IUserRepository } from '../interfaces/user-repository.interface';
+import { CreateUserMapper } from '../mappers/create-user.mapper';
+import { UpdatePasswordMapper } from '../mappers/update-password.mapper';
+import { UpdateUserMapper } from '../mappers/update-user.mapper';
 import { UserMapper } from '../mappers/user.mapper';
 
 import { UserService } from './user.service';
@@ -30,6 +34,9 @@ describe('UserService', () => {
           useValue: mockUserRepository,
         },
         UserMapper,
+        UpdateUserMapper,
+        CreateUserMapper,
+        UpdatePasswordMapper,
       ],
     }).compile();
 
@@ -50,7 +57,7 @@ describe('UserService', () => {
     });
 
     it('should NotFound(404) when user dont exists', async () => {
-      jest.spyOn(userRepository, 'findBy').mockResolvedValueOnce(undefined);
+      jest.spyOn(userRepository, 'find').mockResolvedValueOnce(undefined);
 
       try {
         await userService.findById('any_id');
@@ -85,10 +92,7 @@ describe('UserService', () => {
     it('should return NotAcceptable(406) when email already exists', async () => {
       jest
         .spyOn(userRepository, 'findBy')
-        .mockImplementationOnce(
-          (dto) =>
-            ({ login: 'other_login', email: 'any_email@mail.com' } as any),
-        );
+        .mockImplementationOnce((dto) => ({ login: 'other_login', email: 'any_email@mail.com' } as any));
 
       try {
         await userService.create(createUserDTO);
@@ -101,10 +105,7 @@ describe('UserService', () => {
     it('should return NotAcceptable(406) when login already exists', async () => {
       jest
         .spyOn(userRepository, 'findBy')
-        .mockImplementationOnce(
-          (dto) =>
-            ({ login: 'any_login', email: 'other_email@mail.com' } as any),
-        );
+        .mockImplementationOnce((dto) => ({ login: 'any_login', email: 'other_email@mail.com' } as any));
 
       try {
         await userService.create(createUserDTO);
@@ -115,9 +116,7 @@ describe('UserService', () => {
     });
 
     it('should return UserDTO if user created successfully', async () => {
-      jest
-        .spyOn(userRepository, 'findBy')
-        .mockImplementationOnce((dto) => undefined);
+      jest.spyOn(userRepository, 'findBy').mockImplementationOnce((dto) => undefined);
       const user = await userService.create(createUserDTO);
       expect(userRepository).toBeDefined();
       expect(userRepository.create).toHaveReturned();
@@ -133,17 +132,11 @@ describe('UserService', () => {
     it('should repository throw an exception', async () => {
       jest.spyOn(userRepository, 'findAll').mockRejectedValueOnce(new Error());
 
-      expect(
-        userService.update('any_id', updateUserDTO),
-      ).rejects.toThrowError();
+      expect(userService.update('any_id', updateUserDTO)).rejects.toThrowError();
     });
 
     it('should return NotAcceptable(406) when email already exists', async () => {
-      jest
-        .spyOn(userRepository, 'findAll')
-        .mockImplementationOnce((dto) =>
-          Promise.resolve([new User(), new User()]),
-        );
+      jest.spyOn(userRepository, 'findAll').mockImplementationOnce((dto) => Promise.resolve([new User(), new User()]));
 
       try {
         await userService.update('any_id', updateUserDTO);
@@ -153,14 +146,50 @@ describe('UserService', () => {
     });
 
     it('should return UserDTO if user updated successfully', async () => {
-      jest
-        .spyOn(userRepository, 'findAll')
-        .mockImplementationOnce((dto) => Promise.resolve([new User()]));
+      jest.spyOn(userRepository, 'findAll').mockImplementationOnce((dto) => Promise.resolve([new User()]));
 
       const user = await userService.update('any_id', updateUserDTO);
       expect(userRepository).toBeDefined();
       expect(userRepository.update).toHaveReturned();
       expect(user).toBeInstanceOf(UserDTO);
+    });
+  });
+
+  describe('Update Password', () => {
+    const updatePasswordDTO = new UpdatePasswordDTO();
+    updatePasswordDTO.password = 'any_password';
+    updatePasswordDTO.newPassword = 'new_passsword';
+
+    it('should repository throw an exception', async () => {
+      jest.spyOn(userRepository, 'update').mockRejectedValueOnce(new Error());
+
+      expect(userService.updatePassword('any_id', updatePasswordDTO)).rejects.toThrowError();
+    });
+
+    it('should return NotFound(404) when user dont exists', async () => {
+      jest.spyOn(userRepository, 'find').mockImplementationOnce(() => Promise.resolve(undefined));
+
+      try {
+        await userService.updatePassword('any_id', updatePasswordDTO);
+      } catch (error) {
+        expect(error.status).toBe(404);
+        expect(error.message).toEqual('User dont exists');
+      }
+    });
+
+    it('should return NotAcceptable(406) when password is not valid', async () => {
+      jest.spyOn(userRepository, 'find').mockImplementationOnce((id) => {
+        const user = new User();
+        user.password = 'new_passsword';
+        return Promise.resolve(user);
+      });
+
+      try {
+        await userService.updatePassword('any_id', updatePasswordDTO);
+      } catch (error) {
+        expect(error.status).toBe(406);
+        expect(error.message).toEqual('New password is not valid');
+      }
     });
   });
 });

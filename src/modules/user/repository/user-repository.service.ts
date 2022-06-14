@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../domain/User.entity';
+import { IUserFindBy } from '../interfaces/user-findby.interface';
 import { IUserRepository } from '../interfaces/user-repository.interface';
 
 import { UserRepository } from './user.repository';
@@ -27,6 +28,10 @@ export class UserRepositoryService implements IUserRepository {
     return null;
   }
   delete(id: string): Promise<void> {
+    return null;
+  }
+
+  findBy(userFindBy?: IUserFindBy): Promise<User> {
     return null;
   }
 }

@@ -3,12 +3,12 @@ import { Mapper } from '../interfaces/mapper';
 import { User } from '../domain/User.entity';
 
 export class UserMapper extends Mapper<UserDTO, User> {
-  public toEntity(param: UserDTO): User {
+  public toEntity(param: any): User {
     const user = new User();
-    user.name = param.name;
-    user.email = param.email;
-    user.login = param.login;
-    user.id = param.id;
+    user.name = param?.name;
+    user.email = param?.email;
+    user.login = param?.login;
+    user.id = param?.id;
     return user;
   }
   public fromEntity(param: User): UserDTO {
