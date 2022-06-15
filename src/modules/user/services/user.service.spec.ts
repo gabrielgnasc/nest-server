@@ -1,9 +1,9 @@
-import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { CreateUserDTO } from '../../../common/dtos/user/create-user.dto';
 import { UpdatePasswordDTO } from '../../../common/dtos/user/update-password.dto';
 import { UpdateUserDTO } from '../../../common/dtos/user/update-user.dto';
 import { UserDTO } from '../../../common/dtos/user/user.dto';
+import { IEmailService } from '../../email/interfaces/email-service.interface';
 import { User } from '../domain/User.entity';
 import { IUserRepository } from '../interfaces/user-repository.interface';
 import { CreateUserMapper } from '../mappers/create-user.mapper';
@@ -16,14 +16,23 @@ import { UserService } from './user.service';
 describe('UserService', () => {
   let userService: UserService;
   let userRepository: IUserRepository;
+  let emailService: IEmailService;
 
   const mockUserRepository = {
     find: jest.fn((id) => Promise.resolve(new User())),
     create: jest.fn((item) => Promise.resolve(new User())),
     update: jest.fn((id, user) => Promise.resolve(new User())),
     delete: jest.fn((id) => Promise.resolve()),
-    findBy: jest.fn((dto) => Promise.resolve(new User())),
+    findBy: jest.fn((dto) => {
+      const user = new User();
+      user.id = 'any_id';
+      return Promise.resolve(user);
+    }),
     findAll: jest.fn(),
+  };
+
+  const mockEmailService = {
+    sendRecoverPasswordEmail: jest.fn((id: string) => Promise.resolve()),
   };
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -32,6 +41,10 @@ describe('UserService', () => {
         {
           provide: IUserRepository,
           useValue: mockUserRepository,
+        },
+        {
+          provide: IEmailService,
+          useValue: mockEmailService,
         },
         UserMapper,
         UpdateUserMapper,
@@ -42,6 +55,7 @@ describe('UserService', () => {
 
     userService = module.get<UserService>(UserService);
     userRepository = module.get<IUserRepository>(IUserRepository);
+    emailService = module.get<IEmailService>(IEmailService);
   });
 
   it('should be defined', () => {
@@ -190,6 +204,52 @@ describe('UserService', () => {
         expect(error.status).toBe(406);
         expect(error.message).toEqual('New password is not valid');
       }
+    });
+
+    it('should password is updated successsfully', async () => {
+      jest.spyOn(userRepository, 'find').mockImplementationOnce(() => {
+        const user = new User();
+        user.password = 'old_passsword';
+        return Promise.resolve(user);
+      });
+
+      await userService.updatePassword('any_id', updatePasswordDTO);
+      expect(userRepository).toBeDefined();
+      expect(userRepository.find).toHaveReturned();
+      expect(userRepository.update).toHaveReturned();
+    });
+  });
+
+  describe('Recover Password', () => {
+    it('should repository throw an exception', async () => {
+      jest.spyOn(userRepository, 'findBy').mockRejectedValueOnce(new Error());
+
+      expect(userService.recoverPassword('any_amail@mail.com')).rejects.toThrowError();
+    });
+
+    it('should return NotFound(404) when email is not registered', async () => {
+      jest.spyOn(userRepository, 'findBy').mockImplementationOnce(() => Promise.resolve(undefined));
+
+      try {
+        await userService.recoverPassword('any_amail@mail.com');
+      } catch (error) {
+        expect(error.status).toBe(404);
+        expect(error.message).toEqual('Unregistered Email');
+      }
+    });
+
+    it('Email service throw an exception', async () => {
+      jest.spyOn(emailService, 'sendRecoverPasswordEmail').mockRejectedValueOnce(new Error());
+
+      expect(userService.recoverPassword('any_amail@mail.com')).rejects.toThrowError();
+    });
+
+    it('should return message if service send email successsfully', async () => {
+      const message = await userService.recoverPassword('any_id');
+      expect(userRepository).toBeDefined();
+      expect(userRepository.findBy).toHaveReturned();
+      expect(emailService).toBeDefined();
+      expect(message).toEqual('Email successfully sent!');
     });
   });
 });

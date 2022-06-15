@@ -27,6 +27,6 @@ export class User {
   deletedAt: Date;
 
   newPasswordIsValid(newPassword: string) {
-    return this.password.trim() !== newPassword.trim();
+    return this.password?.trim() !== newPassword.trim();
   }
 }

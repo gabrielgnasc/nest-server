@@ -3,6 +3,7 @@ import { CreateUserDTO } from '../../../common/dtos/user/create-user.dto';
 import { UpdatePasswordDTO } from '../../../common/dtos/user/update-password.dto';
 import { UpdateUserDTO } from '../../../common/dtos/user/update-user.dto';
 import { UserDTO } from '../../../common/dtos/user/user.dto';
+import { IEmailService } from '../../email/interfaces/email-service.interface';
 import { IUserRepository } from '../interfaces/user-repository.interface';
 import { CreateUserMapper } from '../mappers/create-user.mapper';
 import { UpdatePasswordMapper } from '../mappers/update-password.mapper';
@@ -24,7 +25,13 @@ export class UserService {
   @Inject(UpdatePasswordMapper)
   private readonly updatePasswordMapper: UpdatePasswordMapper;
 
-  constructor(private readonly userRepository: IUserRepository) {}
+  @Inject(IUserRepository)
+  private readonly userRepository: IUserRepository;
+
+  @Inject(IEmailService)
+  private readonly emailService: IEmailService;
+
+  constructor() {}
 
   async create(data: CreateUserDTO): Promise<UserDTO> {
     let user = await this.userRepository.findBy({ email: data.email, login: data.login, method: 'OR' });
@@ -62,7 +69,10 @@ export class UserService {
     user = await this.userRepository.update(id, this.updatePasswordMapper.toEntity(data));
   }
 
-  recoverPassword(email: string): Promise<string> {
-    return Promise.resolve({} as any);
+  async recoverPassword(email: string): Promise<string> {
+    let user = await this.userRepository.findBy({ email });
+    if (!user) throw new NotFoundException('Unregistered Email');
+    await this.emailService.sendRecoverPasswordEmail(user.id);
+    return 'Email successfully sent!';
   }
 }
