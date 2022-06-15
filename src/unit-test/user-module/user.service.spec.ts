@@ -1,17 +1,17 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CreateUserDTO } from '../../../common/dtos/user/create-user.dto';
-import { UpdatePasswordDTO } from '../../../common/dtos/user/update-password.dto';
-import { UpdateUserDTO } from '../../../common/dtos/user/update-user.dto';
-import { UserDTO } from '../../../common/dtos/user/user.dto';
-import { IEmailService } from '../../email/interfaces/email-service.interface';
-import { User } from '../domain/User.entity';
-import { IUserRepository } from '../interfaces/user-repository.interface';
-import { CreateUserMapper } from '../mappers/create-user.mapper';
-import { UpdatePasswordMapper } from '../mappers/update-password.mapper';
-import { UpdateUserMapper } from '../mappers/update-user.mapper';
-import { UserMapper } from '../mappers/user.mapper';
+import { CreateUserDTO } from '../../common/dtos/user/create-user.dto';
+import { UpdatePasswordDTO } from '../../common/dtos/user/update-password.dto';
+import { UpdateUserDTO } from '../../common/dtos/user/update-user.dto';
+import { UserDTO } from '../../common/dtos/user/user.dto';
+import { IEmailService } from '../../modules/email/interfaces/email-service.interface';
+import { User } from '../../modules/user/domain/User.entity';
+import { IUserRepository } from '../../modules/user/interfaces/user-repository.interface';
+import { CreateUserMapper } from '../../modules/user/mappers/create-user.mapper';
+import { UpdatePasswordMapper } from '../../modules/user/mappers/update-password.mapper';
+import { UpdateUserMapper } from '../../modules/user/mappers/update-user.mapper';
+import { UserMapper } from '../../modules/user/mappers/user.mapper';
 
-import { UserService } from './user.service';
+import { UserService } from '../../modules/user/services/user.service';
 
 describe('UserService', () => {
   let userService: UserService;

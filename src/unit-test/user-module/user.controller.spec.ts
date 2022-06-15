@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserController } from './user.controller';
+import { UserController } from '../../modules/user/controller/user.controller';
 import { NotAcceptableException, NotFoundException } from '@nestjs/common';
-import { UpdateUserDTO } from '../../../common/dtos/user/update-user.dto';
-import { CreateUserDTO } from '../../../common/dtos/user/create-user.dto';
-import { UpdatePasswordDTO } from '../../../common/dtos/user/update-password.dto';
-import { IUserService } from '../interfaces/user-service.interface';
+import { UpdateUserDTO } from '../../common/dtos/user/update-user.dto';
+import { CreateUserDTO } from '../../common/dtos/user/create-user.dto';
+import { UpdatePasswordDTO } from '../../common/dtos/user/update-password.dto';
+import { IUserService } from '../../modules/user/interfaces/user-service.interface';
 
 describe('UserController', () => {
   let userController: UserController;
@@ -43,10 +43,7 @@ describe('UserController', () => {
           useValue: mockUserService,
         },
       ],
-    })
-      .overrideProvider(IUserService)
-      .useValue(mockUserService)
-      .compile();
+    }).compile();
 
     userController = module.get<UserController>(UserController);
     userService = module.get<IUserService>(IUserService);
@@ -137,25 +134,19 @@ describe('UserController', () => {
     userUpdate.email = 'any_email@mail.com';
 
     it('should throw an exception', async () => {
-      const spy = jest
-        .spyOn(userService, 'update')
-        .mockImplementationOnce(() => {
-          throw new Error();
-        });
+      const spy = jest.spyOn(userService, 'update').mockImplementationOnce(() => {
+        throw new Error();
+      });
 
-      expect(
-        userController.update('any_id', userUpdate),
-      ).rejects.toThrowError();
+      expect(userController.update('any_id', userUpdate)).rejects.toThrowError();
 
       expect(spy).toHaveBeenCalled();
     });
 
     it('should return status 406 when email updated already in use', async () => {
-      const spy = jest
-        .spyOn(userService, 'update')
-        .mockImplementationOnce(() => {
-          throw new NotAcceptableException('Email already exists!');
-        });
+      const spy = jest.spyOn(userService, 'update').mockImplementationOnce(() => {
+        throw new NotAcceptableException('Email already exists!');
+      });
 
       try {
         await userController.update('any_id', userUpdate);
@@ -185,15 +176,11 @@ describe('UserController', () => {
     updatePassword.newPassword = 'new_password';
 
     it('should throw an exception', async () => {
-      const spy = jest
-        .spyOn(userService, 'updatePassword')
-        .mockImplementationOnce(() => {
-          throw new Error();
-        });
+      const spy = jest.spyOn(userService, 'updatePassword').mockImplementationOnce(() => {
+        throw new Error();
+      });
 
-      expect(
-        userController.updatePassword('any_id', updatePassword),
-      ).rejects.toThrowError();
+      expect(userController.updatePassword('any_id', updatePassword)).rejects.toThrowError();
 
       expect(spy).toHaveBeenCalled();
     });
@@ -226,9 +213,7 @@ describe('UserController', () => {
       jest.spyOn(userService, 'recoverPassword').mockImplementationOnce(() => {
         throw new Error();
       });
-      expect(
-        userController.recoverPassword('any_email@mail.com'),
-      ).rejects.toThrowError();
+      expect(userController.recoverPassword('any_email@mail.com')).rejects.toThrowError();
     });
 
     it('should return 406 if email is not registered', async () => {
@@ -247,9 +232,7 @@ describe('UserController', () => {
       const spy = jest.spyOn(userController, 'recoverPassword');
       await userController.recoverPassword('any_email@mail.com');
       expect(spy).toHaveBeenCalledWith('any_email@mail.com');
-      expect(userService.recoverPassword).toHaveBeenCalledWith(
-        'any_email@mail.com',
-      );
+      expect(userService.recoverPassword).toHaveBeenCalledWith('any_email@mail.com');
       expect(userService.recoverPassword).toBeDefined();
     });
   });

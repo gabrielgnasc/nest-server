@@ -1,5 +1,3 @@
-import { CreateUserDTO } from '../../../common/dtos/user/create-user.dto';
-import { UpdateUserDTO } from '../../../common/dtos/user/update-user.dto';
 import { User } from '../domain/User.entity';
 import { IUserFindBy } from './user-findby.interface';
 

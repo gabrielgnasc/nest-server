@@ -9,7 +9,20 @@ export function getDatabaseSettings(configService: ConfigService) {
     username: configService.get('TYPEORM_USERNAMME'),
     password: configService.get('TYPEORM_PASSWORD'),
     database: configService.get('TYPEORM_DATABASE'),
-    entities: ['dist/frameworks/database/schemas/*.entity{.ts,.js}'],
+    entities: ['../**/*.entity{.ts,.js}'],
+    migrations: ['../**/*.migration{.ts,.js}'],
+    synchronize: true,
+    logging: true,
+  } as TypeOrmModuleOptions;
+
+  return configOptions;
+}
+
+export function getTestDatabaseSettings() {
+  const configOptions: TypeOrmModuleOptions = {
+    type: 'sqlite',
+    database: '../unit-test/database/db-test.sqlite',
+    entities: ['../**/*.entity{.ts,.js}'],
     migrations: ['../**/*.migration{.ts,.js}'],
     synchronize: true,
     logging: true,
