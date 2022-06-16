@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { parseUserFindBy } from '../../../common/helpers';
 import { User } from '../domain/User.entity';
-import { IUserFindBy } from '../interfaces/user-findby.interface';
-import { IUserRepository } from '../interfaces/user-repository.interface';
-
+import { IUserFindBy, IUserRepository } from '../interfaces';
 import { UserRepository } from './user.repository';
 
 @Injectable()
@@ -11,27 +10,31 @@ export class UserRepositoryService implements IUserRepository {
   @InjectRepository(User)
   private readonly userRepository: UserRepository;
 
-  findAll(): Promise<User[]> {
-    return this.userRepository.find();
+  async findAll(userFindBy?: IUserFindBy): Promise<User[]> {
+    const options = parseUserFindBy(userFindBy);
+    return await this.userRepository.find({ where: options });
   }
 
-  findByEmail(email: string): Promise<User> {
-    return null;
-  }
-  find(id: string): Promise<User> {
-    return null;
-  }
-  create(item: User): Promise<User> {
-    return null;
-  }
-  update(id: string, item: User): Promise<User> {
-    return null;
-  }
-  delete(id: string): Promise<void> {
-    return null;
+  async find(id: string): Promise<User> {
+    return await this.userRepository.findOneByOrFail({ id });
   }
 
-  findBy(userFindBy?: IUserFindBy): Promise<User> {
-    return null;
+  async create(item: User): Promise<User> {
+    return await this.userRepository.create(item);
+  }
+
+  async update(id: string, item: User): Promise<User> {
+    const user = await this.find(id);
+    await this.userRepository.merge(user, item);
+    return await this.userRepository.save(user);
+  }
+
+  async delete(id: string): Promise<void> {
+    await this.userRepository.softDelete({ id });
+  }
+
+  async findBy(userFindBy?: IUserFindBy): Promise<User> {
+    const options = parseUserFindBy(userFindBy);
+    return await this.userRepository.findOneOrFail({ where: options });
   }
 }
