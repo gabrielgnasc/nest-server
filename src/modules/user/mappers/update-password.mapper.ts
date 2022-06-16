@@ -11,7 +11,7 @@ export class UpdatePasswordMapper extends Mapper<UpdatePasswordDTO, User> {
 
   public fromEntity(param: User): UpdatePasswordDTO {
     const userDTO = new UpdatePasswordDTO();
-    userDTO.password = param.password;
+    userDTO.password = param?.password;
     return userDTO;
   }
 }
