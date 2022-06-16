@@ -1,6 +1,6 @@
 import { CreateUserDTO } from '../../../common/dtos/user/create-user.dto';
 import { User } from '../domain/User.entity';
-import { Mapper } from '../interfaces/mapper';
+import { Mapper } from '../interfaces';
 
 export class CreateUserMapper extends Mapper<CreateUserDTO, User> {
   public toEntity(param: CreateUserDTO): User {

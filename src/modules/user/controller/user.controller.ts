@@ -1,9 +1,6 @@
 import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
-import { CreateUserDTO } from '../../../common/dtos/user/create-user.dto';
-import { UpdatePasswordDTO } from '../../../common/dtos/user/update-password.dto';
-import { UpdateUserDTO } from '../../../common/dtos/user/update-user.dto';
-import { UserDTO } from '../../../common/dtos/user/user.dto';
-import { IUserService } from '../interfaces/user-service.interface';
+import { CreateUserDTO, UserDTO, UpdateUserDTO, UpdatePasswordDTO } from '../../../common/dtos/user';
+import { IUserService } from '../interfaces';
 
 @Controller('user')
 export class UserController {
@@ -20,18 +17,12 @@ export class UserController {
   }
 
   @Put(':id')
-  async update(
-    @Param('id') id: string,
-    @Body() userUpdate: UpdateUserDTO,
-  ): Promise<UserDTO> {
+  async update(@Param('id') id: string, @Body() userUpdate: UpdateUserDTO): Promise<UserDTO> {
     return this.userService.update(id, userUpdate);
   }
 
   @Put('updatePassword/:id')
-  async updatePassword(
-    @Param('id') id: string,
-    @Body() updatePassword: UpdatePasswordDTO,
-  ): Promise<void> {
+  async updatePassword(@Param('id') id: string, @Body() updatePassword: UpdatePasswordDTO): Promise<void> {
     return this.userService.updatePassword(id, updatePassword);
   }
 

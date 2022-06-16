@@ -1,15 +1,8 @@
-import { BadRequestException, Inject, Injectable, NotAcceptableException, NotFoundException } from '@nestjs/common';
-import { CreateUserDTO } from '../../../common/dtos/user/create-user.dto';
-import { UpdatePasswordDTO } from '../../../common/dtos/user/update-password.dto';
-import { UpdateUserDTO } from '../../../common/dtos/user/update-user.dto';
-import { UserDTO } from '../../../common/dtos/user/user.dto';
+import { Inject, Injectable, NotAcceptableException, NotFoundException } from '@nestjs/common';
+import { CreateUserDTO, UserDTO, UpdateUserDTO, UpdatePasswordDTO } from '../../../common/dtos/user';
 import { IEmailService } from '../../email/interfaces/email-service.interface';
 import { IUserRepository } from '../interfaces/user-repository.interface';
-import { CreateUserMapper } from '../mappers/create-user.mapper';
-import { UpdatePasswordMapper } from '../mappers/update-password.mapper';
-import { UpdateUserMapper } from '../mappers/update-user.mapper';
-
-import { UserMapper } from '../mappers/user.mapper';
+import { CreateUserMapper, UpdateUserMapper, UpdatePasswordMapper, UserMapper } from '../mappers';
 
 @Injectable()
 export class UserService {
