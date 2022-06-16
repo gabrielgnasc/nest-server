@@ -16,11 +16,12 @@ export class UserRepositoryService implements IUserRepository {
   }
 
   async find(id: string): Promise<User> {
-    return await this.userRepository.findOneByOrFail({ id });
+    return await this.userRepository.findOneBy({ id });
   }
 
   async create(item: User): Promise<User> {
-    return await this.userRepository.create(item);
+    const user = await this.userRepository.create(item);
+    return await this.userRepository.save(user);
   }
 
   async update(id: string, item: User): Promise<User> {
@@ -35,6 +36,6 @@ export class UserRepositoryService implements IUserRepository {
 
   async findBy(userFindBy?: IUserFindBy): Promise<User> {
     const options = parseUserFindBy(userFindBy);
-    return await this.userRepository.findOneOrFail({ where: options });
+    return await this.userRepository.findOne({ where: options });
   }
 }
