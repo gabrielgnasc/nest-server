@@ -213,7 +213,7 @@ describe('UserController', () => {
       jest.spyOn(userService, 'recoverPassword').mockImplementationOnce(() => {
         throw new Error();
       });
-      expect(userController.recoverPassword('any_email@mail.com')).rejects.toThrowError();
+      expect(userController.recoverPassword({ email: 'any_email@mail.com' })).rejects.toThrowError();
     });
 
     it('should return 406 if email is not registered', async () => {
@@ -222,7 +222,7 @@ describe('UserController', () => {
       });
 
       try {
-        await userController.recoverPassword('any_email@mail.com');
+        await userController.recoverPassword({ email: 'any_email@mail.com' });
       } catch (error) {
         expect(error.status).toBe(406);
       }
@@ -230,8 +230,8 @@ describe('UserController', () => {
 
     it('should recover with success', async () => {
       const spy = jest.spyOn(userController, 'recoverPassword');
-      await userController.recoverPassword('any_email@mail.com');
-      expect(spy).toHaveBeenCalledWith('any_email@mail.com');
+      await userController.recoverPassword({ email: 'any_email@mail.com' });
+      expect(spy).toHaveBeenCalledWith({ email: 'any_email@mail.com' });
       expect(userService.recoverPassword).toHaveBeenCalledWith('any_email@mail.com');
       expect(userService.recoverPassword).toBeDefined();
     });

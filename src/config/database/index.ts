@@ -26,8 +26,8 @@ export function getTestDatabaseSettings() {
     synchronize: true,
     logging: false,
     name: 'testConnection',
-    entities: ['../**/*.entity.{ts,js}'],
-    migrations: ['../**/*.migration.{ts,js}'],
+    entities: ['../../**/*.entity.{ts,js}'],
+    migrations: ['../../**/*.migration.{ts,js}'],
   } as TypeOrmModuleOptions;
 
   return configOptions;

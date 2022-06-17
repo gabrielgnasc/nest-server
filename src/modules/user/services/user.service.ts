@@ -1,11 +1,12 @@
 import { Inject, Injectable, NotAcceptableException, NotFoundException } from '@nestjs/common';
 import { CreateUserDTO, UserDTO, UpdateUserDTO, UpdatePasswordDTO } from '../../../common/dtos/user';
-import { IEmailService } from '../../email/interfaces/email-service.interface';
+import { IEmailService } from '../../mail/interfaces/email-service.interface';
+import { IUserService } from '../interfaces';
 import { IUserRepository } from '../interfaces/user-repository.interface';
 import { CreateUserMapper, UpdateUserMapper, UpdatePasswordMapper, UserMapper } from '../mappers';
 
 @Injectable()
-export class UserService {
+export class UserService implements IUserService {
   @Inject(UserMapper)
   private readonly userMapper: UserMapper;
 
@@ -65,7 +66,8 @@ export class UserService {
   async recoverPassword(email: string): Promise<string> {
     let user = await this.userRepository.findBy({ email });
     if (!user) throw new NotFoundException('Unregistered Email');
-    await this.emailService.sendRecoverPasswordEmail(user.id);
+
+    await this.emailService.sendRecoverPasswordEmail(this.userMapper.fromEntity(user));
     return 'Email successfully sent!';
   }
 }

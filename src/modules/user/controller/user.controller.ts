@@ -2,6 +2,7 @@ import { Body, Controller, Get, HttpCode, Param, Post, Put } from '@nestjs/commo
 import { CreateUserDTO, UserDTO, UpdateUserDTO, UpdatePasswordDTO } from '../../../common/dtos/user';
 import { IUserService } from '../interfaces';
 import { ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { RecoverPasswordDTO } from '../../../common/dtos/user/recover-password.dto';
 
 @ApiTags('Users')
 @Controller('user')
@@ -45,7 +46,7 @@ export class UserController {
   @Post('recoverPassword')
   @HttpCode(204)
   @ApiOperation({ description: 'recover a password' })
-  async recoverPassword(@Body() email: string): Promise<string> {
-    return this.userService.recoverPassword(email);
+  async recoverPassword(@Body() data: RecoverPasswordDTO): Promise<string> {
+    return this.userService.recoverPassword(data.email);
   }
 }

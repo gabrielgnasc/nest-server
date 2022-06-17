@@ -1,8 +1,10 @@
+import { MailerService } from '@nestjs-modules/mailer';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { getDatabaseSettings } from '../../config';
-import { IEmailService } from '../email/interfaces/email-service.interface';
+import { getDatabaseSettings } from '../../config/database';
+import { IEmailService } from '../mail/interfaces/email-service.interface';
+import { MailModule } from '../mail/mail.module';
 import { UserController } from './controller/user.controller';
 import { User } from './domain/User.entity';
 import { IUserRepository } from './interfaces/user-repository.interface';
@@ -24,13 +26,6 @@ const userRepository = {
   useClass: UserRepositoryService,
 };
 
-const emailService = {
-  provide: IEmailService,
-  useValue: {
-    sendRecoverPasswordEmail: (id: string) => Promise.resolve(),
-  },
-};
-
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({
@@ -41,15 +36,7 @@ const emailService = {
     TypeOrmModule.forFeature([User]),
   ],
   controllers: [UserController],
-  providers: [
-    userRepository,
-    userService,
-    emailService,
-    UserMapper,
-    UpdateUserMapper,
-    CreateUserMapper,
-    UpdatePasswordMapper,
-  ],
+  providers: [userRepository, userService, UserMapper, UpdateUserMapper, CreateUserMapper, UpdatePasswordMapper],
   exports: [],
 })
 export class UserModule {}

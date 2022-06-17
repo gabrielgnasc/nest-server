@@ -3,7 +3,7 @@ import { CreateUserDTO } from '../../common/dtos/user/create-user.dto';
 import { UpdatePasswordDTO } from '../../common/dtos/user/update-password.dto';
 import { UpdateUserDTO } from '../../common/dtos/user/update-user.dto';
 import { UserDTO } from '../../common/dtos/user/user.dto';
-import { IEmailService } from '../../modules/email/interfaces/email-service.interface';
+import { IEmailService } from '../../modules/mail/interfaces/email-service.interface';
 import { User } from '../../modules/user/domain/User.entity';
 import { IUserRepository } from '../../modules/user/interfaces/user-repository.interface';
 import { CreateUserMapper } from '../../modules/user/mappers/create-user.mapper';
