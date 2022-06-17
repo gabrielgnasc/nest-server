@@ -23,9 +23,6 @@ export class User {
   @CreateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 
-  @CreateDateColumn({ name: 'deleted_at' })
-  deletedAt: Date;
-
   newPasswordIsValid(newPassword: string) {
     return this.password?.trim() !== newPassword.trim();
   }
