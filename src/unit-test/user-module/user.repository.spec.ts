@@ -7,12 +7,12 @@ describe('UserRespository', () => {
   let userRepositoryService: UserRepositoryService;
 
   const mockedRepository = {
-    findOneByOrFail: jest.fn((options) => {
+    findOneBy: jest.fn((options) => {
       const user = new User();
       user.id = options.id;
       return Promise.resolve(user);
     }),
-    findOneOrFail: jest.fn((options) => {
+    findOne: jest.fn((options) => {
       const user = new User();
       user.id = options?.id;
       user.email = options?.email;
@@ -63,13 +63,13 @@ describe('UserRespository', () => {
 
   describe('Find', () => {
     it('should repository throw an exception', async () => {
-      jest.spyOn(mockedRepository, 'findOneByOrFail').mockRejectedValueOnce(new Error());
+      jest.spyOn(mockedRepository, 'findOneBy').mockRejectedValueOnce(new Error());
       expect(userRepositoryService.find('any_id')).rejects.toThrowError();
     });
 
     it('should return an User List', async () => {
       const response = await userRepositoryService.find('any_id');
-      expect(mockedRepository.findOneByOrFail).toHaveReturned();
+      expect(mockedRepository.findOneBy).toHaveReturned();
       expect(response).toBeInstanceOf(User);
       expect(response.id).toEqual('any_id');
     });
@@ -94,7 +94,7 @@ describe('UserRespository', () => {
     user.id = 'any_id';
 
     it('should find function throw an exception', async () => {
-      jest.spyOn(mockedRepository, 'findOneByOrFail').mockRejectedValueOnce(new Error());
+      jest.spyOn(mockedRepository, 'findOneBy').mockRejectedValueOnce(new Error());
       expect(userRepositoryService.update('any_id', user)).rejects.toThrowError();
     });
 
@@ -132,13 +132,13 @@ describe('UserRespository', () => {
   describe('findBy', () => {
     const user = new User();
     it('should repository throw an exception', async () => {
-      jest.spyOn(mockedRepository, 'findOneOrFail').mockRejectedValueOnce(new Error());
+      jest.spyOn(mockedRepository, 'findOne').mockRejectedValueOnce(new Error());
       expect(userRepositoryService.findBy({ id: 'any_id' })).rejects.toThrowError();
     });
 
     it('should return an User on create', async () => {
       await userRepositoryService.findBy({ email: 'anyemail@mail.com', id: 'any_id' });
-      expect(mockedRepository.findOneOrFail).toHaveReturned();
+      expect(mockedRepository.findOne).toHaveReturned();
     });
   });
 });

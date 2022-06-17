@@ -1,8 +1,8 @@
 import { Inject, Injectable, NotAcceptableException, NotFoundException } from '@nestjs/common';
 import { CreateUserDTO, UserDTO, UpdateUserDTO, UpdatePasswordDTO } from '../../../common/dtos/user';
-import { IEmailService } from '../../mail/interfaces/email-service.interface';
-import { IUserService } from '../interfaces';
-import { IUserRepository } from '../interfaces/user-repository.interface';
+import { IEmailService } from '../../../common/interfaces/mail-interfaces';
+import { IUserService } from '../../../common/interfaces/user-interfaces';
+import { IUserRepository } from '../../../common/interfaces/user-interfaces/user-repository.interface';
 import { CreateUserMapper, UpdateUserMapper, UpdatePasswordMapper, UserMapper } from '../mappers';
 
 @Injectable()

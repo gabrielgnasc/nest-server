@@ -1,4 +1,4 @@
-import { IUserFindBy } from '../../modules/user/interfaces/user-findby.interface';
+import { IUserFindBy } from '../interfaces/user-interfaces/user-findby.interface';
 
 export function parseUserFindBy(userFindBy: IUserFindBy) {
   if (!userFindBy) return {};

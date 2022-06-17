@@ -1,4 +1,4 @@
-import { UserDTO } from '../../../common/dtos/user';
+import { UserDTO } from '../../dtos/user';
 import { ISendMail } from './send-email.dto';
 
 export abstract class IEmailService {

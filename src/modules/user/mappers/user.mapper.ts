@@ -1,5 +1,5 @@
 import { UserDTO } from '../../../common/dtos/user/user.dto';
-import { Mapper } from '../interfaces';
+import { Mapper } from '../../../common/interfaces/user-interfaces';
 import { User } from '../domain/User.entity';
 
 export class UserMapper extends Mapper<UserDTO, User> {

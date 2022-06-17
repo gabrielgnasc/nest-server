@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { parseUserFindBy } from '../../../common/helpers';
 import { User } from '../domain/User.entity';
-import { IUserFindBy, IUserRepository } from '../interfaces';
+import { IUserFindBy, IUserRepository } from '../../../common/interfaces/user-interfaces';
 import { UserRepository } from './user.repository';
 
 @Injectable()

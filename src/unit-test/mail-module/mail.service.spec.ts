@@ -1,7 +1,7 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserDTO } from '../../common/dtos/user';
-import { IAuthService } from '../../modules/auth/interfaces/auth.service';
+import { IAuthService } from '../../common/interfaces/auth-interfaces/auth.service';
 import { MailService } from '../../modules/mail/services/mail.service';
 
 describe('ServicesService', () => {

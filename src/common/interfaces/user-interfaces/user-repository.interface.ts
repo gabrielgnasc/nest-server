@@ -1,4 +1,4 @@
-import { User } from '../domain/User.entity';
+import { User } from '../../../modules/user/domain/User.entity';
 import { IUserFindBy } from './user-findby.interface';
 
 export abstract class IUserRepository {

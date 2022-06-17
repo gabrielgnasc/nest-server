@@ -1,4 +1,4 @@
-import { UpdateUserDTO, CreateUserDTO, UserDTO, UpdatePasswordDTO } from '../../../common/dtos/user';
+import { UpdateUserDTO, CreateUserDTO, UserDTO, UpdatePasswordDTO } from '../../dtos/user';
 export abstract class IUserService {
   abstract create(createUser: CreateUserDTO): Promise<UserDTO>;
 

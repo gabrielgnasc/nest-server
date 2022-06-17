@@ -1,6 +1,6 @@
 import { Body, Controller, Get, HttpCode, Param, Post, Put } from '@nestjs/common';
 import { CreateUserDTO, UserDTO, UpdateUserDTO, UpdatePasswordDTO } from '../../../common/dtos/user';
-import { IUserService } from '../interfaces';
+import { IUserService } from '../../../common/interfaces/user-interfaces';
 import { ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { RecoverPasswordDTO } from '../../../common/dtos/user/recover-password.dto';
 

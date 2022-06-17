@@ -1,9 +1,9 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import { Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { UserDTO } from '../../../common/dtos/user';
-import { IAuthService } from '../../auth/interfaces/auth.service';
-import { IEmailService } from '../interfaces/email-service.interface';
-import { ISendMail } from '../interfaces/send-email.dto';
+import { IAuthService } from '../../../common/interfaces/auth-interfaces/auth.service';
+import { IEmailService } from '../../../common/interfaces/mail-interfaces';
+import { ISendMail } from '../../../common/interfaces/mail-interfaces/send-email.dto';
 
 @Injectable()
 export class MailService implements IEmailService {

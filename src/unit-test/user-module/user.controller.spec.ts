@@ -4,7 +4,7 @@ import { NotAcceptableException, NotFoundException } from '@nestjs/common';
 import { UpdateUserDTO } from '../../common/dtos/user/update-user.dto';
 import { CreateUserDTO } from '../../common/dtos/user/create-user.dto';
 import { UpdatePasswordDTO } from '../../common/dtos/user/update-password.dto';
-import { IUserService } from '../../modules/user/interfaces/user-service.interface';
+import { IUserService } from '../../common/interfaces/user-interfaces/user-service.interface';
 
 describe('UserController', () => {
   let userController: UserController;

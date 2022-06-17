@@ -1,14 +1,11 @@
-import { MailerService } from '@nestjs-modules/mailer';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { getDatabaseSettings } from '../../config/database';
-import { IEmailService } from '../mail/interfaces/email-service.interface';
-import { MailModule } from '../mail/mail.module';
 import { UserController } from './controller/user.controller';
 import { User } from './domain/User.entity';
-import { IUserRepository } from './interfaces/user-repository.interface';
-import { IUserService } from './interfaces/user-service.interface';
+import { IUserRepository } from '../../common/interfaces/user-interfaces/user-repository.interface';
+import { IUserService } from '../../common/interfaces/user-interfaces/user-service.interface';
 import { CreateUserMapper } from './mappers/create-user.mapper';
 import { UpdatePasswordMapper } from './mappers/update-password.mapper';
 import { UpdateUserMapper } from './mappers/update-user.mapper';

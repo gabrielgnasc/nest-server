@@ -1,4 +1,4 @@
-import { UserDTO } from '../../../common/dtos/user';
+import { UserDTO } from '../../dtos/user';
 
 export abstract class IAuthService {
   abstract getTokenByUser(data: UserDTO): Promise<string>;

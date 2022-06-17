@@ -1,6 +1,6 @@
 import { UpdatePasswordDTO } from '../../../common/dtos/user/update-password.dto';
 import { User } from '../domain/User.entity';
-import { Mapper } from '../interfaces';
+import { Mapper } from '../../../common/interfaces/user-interfaces';
 
 export class UpdatePasswordMapper extends Mapper<UpdatePasswordDTO, User> {
   public toEntity(param: UpdatePasswordDTO): User {
