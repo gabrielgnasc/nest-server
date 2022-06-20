@@ -6,4 +6,6 @@ export abstract class IAuthService {
   abstract getUserByToken(data: string): Promise<UserDTO>;
 
   abstract login(data: any): Promise<UserDTO>;
+
+  abstract validateUser(login: string, password: string): Promise<any>;
 }

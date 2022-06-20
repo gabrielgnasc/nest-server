@@ -1,7 +1,7 @@
 import { Inject, Injectable, NotAcceptableException, NotFoundException } from '@nestjs/common';
 import { CreateUserDTO, UserDTO, UpdateUserDTO, UpdatePasswordDTO } from '../../../common/dtos/user';
 import { IEmailService } from '../../../common/interfaces/mail-interfaces';
-import { IUserService } from '../../../common/interfaces/user-interfaces';
+import { IUserFindBy, IUserService } from '../../../common/interfaces/user-interfaces';
 import { IUserRepository } from '../../../common/interfaces/user-interfaces/user-repository.interface';
 import { CreateUserMapper, UpdateUserMapper, UpdatePasswordMapper, UserMapper } from '../mappers';
 
@@ -69,5 +69,10 @@ export class UserService implements IUserService {
 
     await this.emailService.sendRecoverPasswordEmail(this.userMapper.fromEntity(user));
     return 'Email successfully sent!';
+  }
+
+  async findBy(data?: IUserFindBy): Promise<UserDTO> {
+    const user = await this.userRepository.findBy(data);
+    return this.userMapper.fromEntity(user);
   }
 }

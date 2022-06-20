@@ -1,4 +1,5 @@
 import { UpdateUserDTO, CreateUserDTO, UserDTO, UpdatePasswordDTO } from '../../dtos/user';
+import { IUserFindBy } from './user-findby.interface';
 export abstract class IUserService {
   abstract create(createUser: CreateUserDTO): Promise<UserDTO>;
 
@@ -9,4 +10,6 @@ export abstract class IUserService {
   abstract updatePassword(id: string, user: UpdatePasswordDTO): Promise<void>;
 
   abstract recoverPassword(email: string): Promise<string>;
+
+  abstract findBy(data?: IUserFindBy): Promise<UserDTO>;
 }

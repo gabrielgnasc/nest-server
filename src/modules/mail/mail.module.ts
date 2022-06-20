@@ -2,7 +2,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { Global, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { getMailSettings } from '../../config/mail';
-import { IAuthService } from '../../common/interfaces/auth-interfaces/auth.service';
+import { IAuthService } from '../../common/interfaces/auth-interfaces/auth-service.interface';
 import { IEmailService } from '../../common/interfaces/mail-interfaces';
 import { MailService } from './services/mail.service';
 
