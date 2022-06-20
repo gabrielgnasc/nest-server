@@ -10,7 +10,6 @@ import { CreateUserMapper } from '../../modules/user/mappers/create-user.mapper'
 import { UpdatePasswordMapper } from '../../modules/user/mappers/update-password.mapper';
 import { UpdateUserMapper } from '../../modules/user/mappers/update-user.mapper';
 import { UserMapper } from '../../modules/user/mappers/user.mapper';
-
 import { UserService } from '../../modules/user/services/user.service';
 
 describe('UserService', () => {
@@ -175,6 +174,11 @@ describe('UserService', () => {
     updatePasswordDTO.newPassword = 'new_passsword';
 
     it('should repository throw an exception', async () => {
+      jest.spyOn(userRepository, 'find').mockImplementationOnce(() => {
+        const user = new User();
+        user.password = 'any_passsword';
+        return Promise.resolve(user);
+      });
       jest.spyOn(userRepository, 'update').mockRejectedValueOnce(new Error());
 
       expect(userService.updatePassword('any_id', updatePasswordDTO)).rejects.toThrowError();
@@ -195,6 +199,7 @@ describe('UserService', () => {
       jest.spyOn(userRepository, 'find').mockImplementationOnce((id) => {
         const user = new User();
         user.password = 'new_passsword';
+        user.hashPassword();
         return Promise.resolve(user);
       });
 

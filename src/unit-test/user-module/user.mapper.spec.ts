@@ -40,6 +40,7 @@ describe('UserRespository', () => {
     const updatePasswordMapper = new UpdatePasswordMapper();
     it('should return entity', () => {
       const userDTO = new UpdatePasswordDTO();
+      userDTO.newPassword = 'any_password';
       const entity = updatePasswordMapper.toEntity(userDTO);
       expect(entity).toBeInstanceOf(User);
     });

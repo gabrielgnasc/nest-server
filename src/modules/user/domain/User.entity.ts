@@ -1,5 +1,5 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm';
-
+import { BeforeInsert, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { hashSync, compareSync } from 'bcrypt';
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn('uuid')
@@ -24,6 +24,11 @@ export class User {
   updatedAt: Date;
 
   newPasswordIsValid(newPassword: string) {
-    return this.password?.trim() !== newPassword.trim();
+    return !compareSync(newPassword, this.password);
+  }
+
+  @BeforeInsert()
+  hashPassword() {
+    this.password = hashSync(this.password, 10);
   }
 }
