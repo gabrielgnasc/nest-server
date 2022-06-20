@@ -5,6 +5,7 @@ import { UpdateUserDTO } from '../../common/dtos/user/update-user.dto';
 import { CreateUserDTO } from '../../common/dtos/user/create-user.dto';
 import { UpdatePasswordDTO } from '../../common/dtos/user/update-password.dto';
 import { IUserService } from '../../common/interfaces/user-interfaces/user-service.interface';
+import { UserMapper } from '../../modules/user/mappers';
 
 describe('UserController', () => {
   let userController: UserController;
@@ -42,6 +43,7 @@ describe('UserController', () => {
           provide: IUserService,
           useValue: mockUserService,
         },
+        UserMapper,
       ],
     }).compile();
 

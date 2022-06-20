@@ -3,6 +3,7 @@ import { CreateUserDTO, UserDTO, UpdateUserDTO, UpdatePasswordDTO } from '../../
 import { IEmailService } from '../../../common/interfaces/mail-interfaces';
 import { IUserFindBy, IUserService } from '../../../common/interfaces/user-interfaces';
 import { IUserRepository } from '../../../common/interfaces/user-interfaces/user-repository.interface';
+import { User } from '../domain/User.entity';
 import { CreateUserMapper, UpdateUserMapper, UpdatePasswordMapper, UserMapper } from '../mappers';
 
 @Injectable()
@@ -27,31 +28,29 @@ export class UserService implements IUserService {
 
   constructor() {}
 
-  async create(data: CreateUserDTO): Promise<UserDTO> {
+  async create(data: CreateUserDTO): Promise<User> {
     let user = await this.userRepository.findBy({ email: data.email, login: data.login, method: 'OR' });
 
     if (user?.email === data.email) throw new NotAcceptableException('this email is already used!');
     if (user?.login === data.login) throw new NotAcceptableException('this login is already used!');
 
-    user = await this.userRepository.create(this.createUserMapper.toEntity(data));
-    return this.userMapper.fromEntity(user);
+    return await this.userRepository.create(this.createUserMapper.toEntity(data));
   }
 
-  async update(id: string, data: UpdateUserDTO): Promise<UserDTO> {
+  async update(id: string, data: UpdateUserDTO): Promise<User> {
     const users = await this.userRepository.findAll({ email: data.email, id: id, method: 'OR' });
 
     if (users.length > 1) throw new NotAcceptableException('email already exists!');
 
-    const user = await this.userRepository.update(id, this.updateUserMapper.toEntity(data));
-    return this.userMapper.fromEntity(user);
+    return await this.userRepository.update(id, this.updateUserMapper.toEntity(data));
   }
 
-  async findById(id: string): Promise<UserDTO> {
+  async findById(id: string): Promise<User> {
     const user = await this.userRepository.find(id);
 
     if (!user) throw new NotFoundException('User dont exists');
 
-    return this.userMapper.fromEntity(user);
+    return user;
   }
 
   async updatePassword(id: string, data: UpdatePasswordDTO): Promise<void> {
@@ -71,8 +70,7 @@ export class UserService implements IUserService {
     return 'Email successfully sent!';
   }
 
-  async findBy(data?: IUserFindBy): Promise<UserDTO> {
-    const user = await this.userRepository.findBy(data);
-    return this.userMapper.fromEntity(user);
+  async findBy(data?: IUserFindBy): Promise<User> {
+    return await this.userRepository.findBy(data);
   }
 }

@@ -1,39 +1,37 @@
-import { Body, Controller, Get, HttpCode, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Inject, Param, Post, Put } from '@nestjs/common';
 import { CreateUserDTO, UserDTO, UpdateUserDTO, UpdatePasswordDTO } from '../../../common/dtos/user';
 import { IUserService } from '../../../common/interfaces/user-interfaces';
 import { ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { RecoverPasswordDTO } from '../../../common/dtos/user/recover-password.dto';
+import { UserMapper, CreateUserMapper, UpdateUserMapper, UpdatePasswordMapper } from '../mappers';
 
 @ApiTags('Users')
 @Controller('user')
 export class UserController {
+  @Inject(UserMapper)
+  private readonly userMapper: UserMapper;
+
   constructor(private readonly userService: IUserService) {}
 
-  @ApiOkResponse({
-    description: 'Get user by id',
-    type: UserDTO,
-  })
-  @ApiNotFoundResponse({
-    description: 'User dont exists',
-  })
   @Get(':id')
+  @ApiOperation({ description: 'User dont exists' })
   async findById(@Param('id') id: string): Promise<UserDTO> {
-    return this.userService.findById(id);
+    const user = await this.userService.findById(id);
+    return this.userMapper.fromEntity(user);
   }
 
-  @ApiCreatedResponse({
-    description: 'It creates a new user',
-    type: UserDTO,
-  })
   @Post()
+  @ApiOperation({ description: 'It creates a new user' })
   async create(@Body() userSignUp: CreateUserDTO): Promise<UserDTO> {
-    return this.userService.create(userSignUp);
+    const user = await this.userService.create(userSignUp);
+    return this.userMapper.fromEntity(user);
   }
 
   @Put(':id')
   @ApiOperation({ description: 'Update a user' })
   async update(@Param('id') id: string, @Body() userUpdate: UpdateUserDTO): Promise<UserDTO> {
-    return this.userService.update(id, userUpdate);
+    const user = await this.userService.update(id, userUpdate);
+    return this.userMapper.fromEntity(user);
   }
 
   @Put('updatePassword/:id')

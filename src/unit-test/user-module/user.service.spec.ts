@@ -85,7 +85,7 @@ describe('UserService', () => {
       expect(userRepository).toBeDefined();
       expect(userRepository.find).toHaveBeenCalledWith('any_id');
       expect(userRepository.find).toHaveReturned();
-      expect(user).toBeInstanceOf(UserDTO);
+      expect(user).toBeInstanceOf(User);
     });
   });
 
@@ -133,7 +133,7 @@ describe('UserService', () => {
       const user = await userService.create(createUserDTO);
       expect(userRepository).toBeDefined();
       expect(userRepository.create).toHaveReturned();
-      expect(user).toBeInstanceOf(UserDTO);
+      expect(user).toBeInstanceOf(User);
     });
   });
 
@@ -164,7 +164,7 @@ describe('UserService', () => {
       const user = await userService.update('any_id', updateUserDTO);
       expect(userRepository).toBeDefined();
       expect(userRepository.update).toHaveReturned();
-      expect(user).toBeInstanceOf(UserDTO);
+      expect(user).toBeInstanceOf(User);
     });
   });
 
