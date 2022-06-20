@@ -23,12 +23,16 @@ export class User {
   @CreateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 
-  newPasswordIsValid(newPassword: string) {
+  newPasswordIsValid(newPassword: string): boolean {
     return !compareSync(newPassword, this.password);
   }
 
+  comparePasswords(password: string): boolean {
+    return compareSync(password, this.password);
+  }
+
   @BeforeInsert()
-  hashPassword() {
+  hashPassword(): void {
     this.password = hashSync(this.password, 10);
   }
 }
