@@ -34,6 +34,6 @@ const userRepository = {
   ],
   controllers: [UserController],
   providers: [userRepository, userService, UserMapper, UpdateUserMapper, CreateUserMapper, UpdatePasswordMapper],
-  exports: [],
+  exports: [userService],
 })
 export class UserModule {}

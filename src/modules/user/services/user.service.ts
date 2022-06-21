@@ -1,5 +1,5 @@
 import { Inject, Injectable, NotAcceptableException, NotFoundException } from '@nestjs/common';
-import { CreateUserDTO, UserDTO, UpdateUserDTO, UpdatePasswordDTO } from '../../../common/dtos/user';
+import { CreateUserDTO, UpdateUserDTO, UpdatePasswordDTO } from '../../../common/dtos/user';
 import { IEmailService } from '../../../common/interfaces/mail-interfaces';
 import { IUserFindBy, IUserService } from '../../../common/interfaces/user-interfaces';
 import { IUserRepository } from '../../../common/interfaces/user-interfaces/user-repository.interface';

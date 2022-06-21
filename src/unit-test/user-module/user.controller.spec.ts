@@ -6,10 +6,14 @@ import { CreateUserDTO } from '../../common/dtos/user/create-user.dto';
 import { UpdatePasswordDTO } from '../../common/dtos/user/update-password.dto';
 import { IUserService } from '../../common/interfaces/user-interfaces/user-service.interface';
 import { UserMapper } from '../../modules/user/mappers';
+import { RequestDTO } from '../../common/dtos/auth';
 
 describe('UserController', () => {
   let userController: UserController;
   let userService: IUserService;
+
+  const request = new RequestDTO();
+  request.user = { id: 'any_id', login: 'any_login' };
 
   const mockUserService = {
     create: jest.fn((dto) => ({
@@ -61,7 +65,7 @@ describe('UserController', () => {
       jest.spyOn(userService, 'findById').mockImplementationOnce(() => {
         throw new Error();
       });
-      expect(userController.findById('any_id')).rejects.toThrowError();
+      expect(userController.findById(request, 'any_id')).rejects.toThrowError();
     });
 
     it('should status 404 when id dont exists', async () => {
@@ -70,14 +74,14 @@ describe('UserController', () => {
       });
 
       try {
-        await userController.findById('any_id');
+        await userController.findById(request, 'any_id');
       } catch (error) {
         expect(error.status).toBe(404);
       }
     });
 
     it('should return user if find successfully', async () => {
-      const result = await userController.findById('any_id');
+      const result = await userController.findById(request, 'any_id');
 
       expect(result).toEqual({
         id: expect.any(String),
@@ -140,7 +144,7 @@ describe('UserController', () => {
         throw new Error();
       });
 
-      expect(userController.update('any_id', userUpdate)).rejects.toThrowError();
+      expect(userController.update(request, 'any_id', userUpdate)).rejects.toThrowError();
 
       expect(spy).toHaveBeenCalled();
     });
@@ -151,7 +155,7 @@ describe('UserController', () => {
       });
 
       try {
-        await userController.update('any_id', userUpdate);
+        await userController.update(request, 'any_id', userUpdate);
       } catch (error) {
         expect(error.status).toBe(406);
       }
@@ -159,7 +163,7 @@ describe('UserController', () => {
     });
 
     it('should return user if updated successfully', async () => {
-      const result = await userController.update('any_id', userUpdate);
+      const result = await userController.update(request, 'any_id', userUpdate);
 
       expect(result).toEqual({
         id: 'any_id',
@@ -182,7 +186,7 @@ describe('UserController', () => {
         throw new Error();
       });
 
-      expect(userController.updatePassword('any_id', updatePassword)).rejects.toThrowError();
+      expect(userController.updatePassword(request, 'any_id', updatePassword)).rejects.toThrowError();
 
       expect(spy).toHaveBeenCalled();
     });
@@ -193,7 +197,7 @@ describe('UserController', () => {
       });
 
       try {
-        await userController.updatePassword('any_id', updatePassword);
+        await userController.updatePassword(request, 'any_id', updatePassword);
       } catch (error) {
         expect(error.status).toBe(406);
       }
@@ -205,8 +209,8 @@ describe('UserController', () => {
       updatePassword.password = 'any_password';
       updatePassword.newPassword = '';
 
-      await userController.updatePassword('any_id', updatePassword);
-      expect(spy).toHaveBeenCalledWith('any_id', updatePassword);
+      await userController.updatePassword(request, 'any_id', updatePassword);
+      expect(spy).toHaveBeenCalledWith(request, 'any_id', updatePassword);
     });
   });
 

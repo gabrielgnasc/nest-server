@@ -1,10 +1,12 @@
-import { Inject, UnauthorizedException } from '@nestjs/common';
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-local';
 import { MessagesHelper } from '../../../common/helpers';
 import { IAuthService } from '../../../common/interfaces/auth-interfaces';
+import { IGenericStrategy } from '../../../common/interfaces/auth-interfaces';
 
-export class LocaStrategy extends PassportStrategy(Strategy) {
+@Injectable()
+export class LocaStrategy extends PassportStrategy(Strategy, 'local') implements IGenericStrategy {
   @Inject(IAuthService)
   private readonly authService: IAuthService;
 

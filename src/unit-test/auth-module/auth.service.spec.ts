@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { IJwtService } from '../../common/interfaces/auth-interfaces';
 import { IUserService } from '../../common/interfaces/user-interfaces';
 import { AuthService } from '../../modules/auth/services/auth.service';
 import { UserModule } from '../../modules/user/user.module';
@@ -29,6 +30,7 @@ describe('AuthService', () => {
       email: 'any_email@mail.com',
     })),
   };
+  const mockJwtService = {};
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -37,6 +39,10 @@ describe('AuthService', () => {
         {
           provide: IUserService,
           useValue: mockUserService,
+        },
+        {
+          provide: IJwtService,
+          useValue: mockJwtService,
         },
       ],
     }).compile();
