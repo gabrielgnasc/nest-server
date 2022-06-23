@@ -13,11 +13,12 @@ import {
 } from '@nestjs/common';
 import { CreateUserDTO, UserDTO, UpdateUserDTO, UpdatePasswordDTO } from '../../../common/dtos/user';
 import { IUserService } from '../../../common/interfaces/user-interfaces';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiForbiddenResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { RecoverPasswordDTO } from '../../../common/dtos/user/recover-password.dto';
 import { UserMapper } from '../mappers';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { RequestDTO } from '../../../common/dtos/auth/request.dto';
+import { userIdMatch } from '../../../common/helpers';
 
 @ApiTags('Users')
 @Controller('user')
@@ -29,15 +30,17 @@ export class UserController {
 
   @Get(':id')
   @UseGuards(JwtAuthGuard)
-  @ApiOperation({ description: 'User dont exists' })
+  @ApiResponse({ status: 200, description: 'The record has been successfully updated.' })
+  @ApiForbiddenResponse({ description: 'Forbidden.' })
   async findById(@Request() req: RequestDTO, @Param('id') id: string): Promise<UserDTO> {
-    if (req.user.id !== id) throw new ForbiddenException();
+    if (!userIdMatch(req, id)) throw new ForbiddenException();
     const user = await this.userService.findById(id);
     return this.userMapper.fromEntity(user);
   }
 
   @Post()
-  @ApiOperation({ description: 'It creates a new user' })
+  @ApiCreatedResponse({ description: 'The record has been successfully updated.', type: UserDTO })
+  @ApiResponse({ status: 406, description: 'When the email or login already in use.' })
   async create(@Body() userSignUp: CreateUserDTO): Promise<UserDTO> {
     const user = await this.userService.create(userSignUp);
     return this.userMapper.fromEntity(user);
@@ -45,13 +48,14 @@ export class UserController {
 
   @Put(':id')
   @UseGuards(JwtAuthGuard)
-  @ApiOperation({ description: 'Update a user' })
+  @ApiResponse({ status: 200, description: 'The record has been successfully updated.' })
+  @ApiForbiddenResponse({ description: 'Forbidden.' })
   async update(
     @Request() req: RequestDTO,
     @Param('id') id: string,
     @Body() userUpdate: UpdateUserDTO,
   ): Promise<UserDTO> {
-    if (req.user.id !== id) throw new ForbiddenException();
+    if (!userIdMatch(req, id)) throw new ForbiddenException();
     const user = await this.userService.update(id, userUpdate);
     return this.userMapper.fromEntity(user);
   }
@@ -59,19 +63,20 @@ export class UserController {
   @Put('updatePassword/:id')
   @HttpCode(204)
   @UseGuards(JwtAuthGuard)
-  @ApiOperation({ description: 'Update a password' })
+  @ApiForbiddenResponse({ description: 'Forbidden' })
+  @ApiResponse({ status: 204, description: 'The record has been successfully updated.' })
   async updatePassword(
     @Request() req: RequestDTO,
     @Param('id') id: string,
     @Body() updatePassword: UpdatePasswordDTO,
   ): Promise<void> {
-    if (req.user.id !== id) throw new ForbiddenException();
+    if (!userIdMatch(req, id)) throw new ForbiddenException();
     return this.userService.updatePassword(id, updatePassword);
   }
 
   @Post('recoverPassword')
   @HttpCode(204)
-  @ApiOperation({ description: 'recover a password' })
+  @ApiResponse({ status: 204, description: 'The record has been successfully updated.' })
   async recoverPassword(@Body() data: RecoverPasswordDTO): Promise<string> {
     return this.userService.recoverPassword(data.email);
   }

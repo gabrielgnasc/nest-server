@@ -80,6 +80,25 @@ describe('UserController', () => {
       }
     });
 
+    it('should status 403 when id dont match with user', async () => {
+      const _request = new RequestDTO();
+      _request.user = { id: 'any', login: 'any_login' };
+      try {
+        await userController.findById(_request, 'any_id');
+      } catch (error) {
+        expect(error.status).toBe(403);
+      }
+    });
+
+    it('should status 403 when dont have id', async () => {
+      const _request = { user: null };
+      try {
+        await userController.findById(_request, 'any_id');
+      } catch (error) {
+        expect(error.status).toBe(403);
+      }
+    });
+
     it('should return user if find successfully', async () => {
       const result = await userController.findById(request, 'any_id');
 
@@ -162,6 +181,25 @@ describe('UserController', () => {
       expect(spy).toHaveBeenCalled();
     });
 
+    it('should status 403 when id dont match with user', async () => {
+      const _request = new RequestDTO();
+      _request.user = { id: 'any', login: 'any_login' };
+      try {
+        await userController.update(_request, 'any_id', userUpdate);
+      } catch (error) {
+        expect(error.status).toBe(403);
+      }
+    });
+
+    it('should status 403 when dont have id', async () => {
+      const _request = { user: null };
+      try {
+        await userController.update(_request, 'any_id', userUpdate);
+      } catch (error) {
+        expect(error.status).toBe(403);
+      }
+    });
+
     it('should return user if updated successfully', async () => {
       const result = await userController.update(request, 'any_id', userUpdate);
 
@@ -200,6 +238,25 @@ describe('UserController', () => {
         await userController.updatePassword(request, 'any_id', updatePassword);
       } catch (error) {
         expect(error.status).toBe(406);
+      }
+    });
+
+    it('should status 403 when id dont match with user', async () => {
+      const _request = new RequestDTO();
+      _request.user = { id: 'any', login: 'any_login' };
+      try {
+        await userController.updatePassword(_request, 'any_id', updatePassword);
+      } catch (error) {
+        expect(error.status).toBe(403);
+      }
+    });
+
+    it('should status 403 when dont have id', async () => {
+      const _request = { user: null };
+      try {
+        await userController.updatePassword(_request, 'any_id', updatePassword);
+      } catch (error) {
+        expect(error.status).toBe(403);
       }
     });
 
