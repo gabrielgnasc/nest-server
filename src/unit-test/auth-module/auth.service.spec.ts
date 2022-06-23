@@ -1,57 +1,159 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { TokenDTO } from '../../common/dtos/auth';
+import { UserDTO } from '../../common/dtos/user';
 import { IJwtService } from '../../common/interfaces/auth-interfaces';
 import { IUserService } from '../../common/interfaces/user-interfaces';
 import { AuthService } from '../../modules/auth/services/auth.service';
-import { UserModule } from '../../modules/user/user.module';
+import { User } from '../../modules/user/domain/User.entity';
 
 describe('AuthService', () => {
-  let authService: AuthService;
+	let authService: AuthService;
+	let jwtService: IJwtService;
+	let userService: IUserService;
 
-  const mockUserService = {
-    create: jest.fn((dto) => ({
-      id: Date.now().toString(),
-      name: dto.name,
-      email: dto.email,
-      login: dto.login,
-    })),
-    update: jest.fn((id, dto) => ({
-      id,
-      ...dto,
-      login: 'any_login',
-    })),
-    updatePassword: jest.fn((id, dto) => {
-      return null;
-    }),
-    recoverPassword: jest.fn((email) => ''),
-    findById: jest.fn((id) => ({
-      id: Date.now().toString(),
-      name: 'any_name',
-      login: 'any_login',
-      email: 'any_email@mail.com',
-    })),
-  };
-  const mockJwtService = {};
+	const userEntity = new User();
+	userEntity.id = 'any_id';
+	userEntity.login = 'any_login';
+	userEntity.password = 'any_password';
+	userEntity.hashPassword();
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        AuthService,
-        {
-          provide: IUserService,
-          useValue: mockUserService,
-        },
-        {
-          provide: IJwtService,
-          useValue: mockJwtService,
-        },
-      ],
-    }).compile();
+	const mockUserService = {
+		findById: jest.fn((id) => {
+			return Promise.resolve(userEntity);
+		}),
+		findBy: jest.fn((options) => {
+			return Promise.resolve(userEntity);
+		}),
+	};
+	const mockJwtService = {
+		sign: jest.fn((payload, options) => 'any_token'),
+		decode: jest.fn((data, any) => ({ sub: 'any_id', login: 'any_login' })),
+	};
 
-    authService = module.get<AuthService>(AuthService);
-  });
+	beforeEach(async () => {
+		const module: TestingModule = await Test.createTestingModule({
+			providers: [
+				AuthService,
+				{
+					provide: IUserService,
+					useValue: mockUserService,
+				},
+				{
+					provide: IJwtService,
+					useValue: mockJwtService,
+				},
+			],
+		}).compile();
 
-  it('should be defined', () => {
-    expect(authService).toBeDefined();
-  });
+		authService = module.get<AuthService>(AuthService);
+		jwtService = module.get<IJwtService>(IJwtService);
+		userService = module.get<IUserService>(IUserService);
+	});
+
+	it('should be defined', () => {
+		expect(authService).toBeDefined();
+	});
+
+	describe('getTokenByUser', () => {
+		it('should throw an Internal Server Error when user is not passed', async () => {
+			try {
+				const token = await authService.getTokenByUser(undefined);
+			} catch (error) {
+				expect(error.status).toBe(500);
+				expect(error.message).toEqual('User is required');
+			}
+		});
+
+		it('should throw an Internal Server Error when user dont contains id', async () => {
+			try {
+				const token = await authService.getTokenByUser({} as UserDTO);
+			} catch (error) {
+				expect(error.status).toBe(500);
+				expect(error.message).toEqual('User is required');
+			}
+		});
+
+		it('should return a token when successful', async () => {
+			const user = { id: 'any_id', email: 'any_email' } as UserDTO;
+			const token = await authService.getTokenByUser(user);
+			expect(typeof token).toEqual('string');
+			expect(jwtService.sign).toHaveBeenCalled();
+		});
+	});
+
+	describe('login', () => {
+		it('should throw an Internal Server Error when user is not passed', async () => {
+			try {
+				const token = await authService.login(undefined);
+			} catch (error) {
+				expect(error.status).toBe(500);
+				expect(error.message).toEqual('User is required');
+			}
+		});
+
+		it('should throw an Internal Server Error when user dont contains id', async () => {
+			try {
+				const token = await authService.login({} as UserDTO);
+			} catch (error) {
+				expect(error.status).toBe(500);
+				expect(error.message).toEqual('User is required');
+			}
+		});
+
+		it('should return a TokenDTO when successful', async () => {
+			const user = { id: 'any_id', email: 'any_email' } as UserDTO;
+			const token = await authService.login(user);
+			expect(token).toBeInstanceOf(TokenDTO);
+			expect(jwtService.sign).toHaveBeenCalled();
+		});
+	});
+
+	describe('getUserByToken', () => {
+		it('should throw an Internal Server Error when token is not passed', async () => {
+			try {
+				const token = await authService.getUserByToken(undefined);
+			} catch (error) {
+				expect(error.status).toBe(500);
+				expect(error.message).toEqual('Token is required');
+			}
+		});
+
+		it('should throw an Bad Request Error when token is invalid', async () => {
+			mockJwtService.decode.mockImplementationOnce((dt) => null);
+			try {
+				const token = await authService.getUserByToken('any_token');
+			} catch (error) {
+				expect(error.status).toBe(400);
+				expect(error.message).toEqual('Token invalid');
+			}
+		});
+
+		it('should return a User Entity when successful', async () => {
+			const user = await authService.getUserByToken('any_token');
+			expect(user).toBeInstanceOf(User);
+			expect(jwtService.decode).toHaveBeenCalled();
+			expect(userService.findById).toHaveBeenCalled();
+		});
+	});
+
+	describe('validateUser', () => {
+		it('should return null when user is not found', async () => {
+			mockUserService.findBy.mockImplementationOnce((args) => Promise.resolve(null));
+			const response = await authService.validateUser('any_login', 'any_password');
+			expect(response).toBeNull();
+		});
+
+		it('should return null when password dont match', async () => {
+			const response = await authService.validateUser('any_login', 'other_password');
+			expect(response).toBeNull();
+		});
+
+		it('should return a User Entity when successful', async () => {
+			const response = await authService.validateUser('any_login', 'any_password');
+			expect(response).toBeInstanceOf(User);
+			expect(userService.findBy).toHaveBeenCalled();
+			expect(response).toEqual(userEntity);
+		});
+	});
 });
 
