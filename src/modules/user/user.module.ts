@@ -1,7 +1,5 @@
-import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { getDatabaseSettings } from '../../config/database';
 import { UserController } from './controller/user.controller';
 import { User } from './domain/User.entity';
 import { IUserRepository } from '../../common/interfaces/user-interfaces/user-repository.interface';
@@ -24,14 +22,7 @@ const userRepository = {
 };
 
 @Module({
-  imports: [
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => getDatabaseSettings(configService),
-    }),
-    TypeOrmModule.forFeature([User]),
-  ],
+  imports: [TypeOrmModule.forFeature([User])],
   controllers: [UserController],
   providers: [userRepository, userService, UserMapper, UpdateUserMapper, CreateUserMapper, UpdatePasswordMapper],
   exports: [userService],

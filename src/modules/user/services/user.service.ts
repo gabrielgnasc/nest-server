@@ -1,5 +1,6 @@
-import { Inject, Injectable, NotAcceptableException, NotFoundException } from '@nestjs/common';
+import { Inject, forwardRef, Injectable, NotAcceptableException, NotFoundException } from '@nestjs/common';
 import { CreateUserDTO, UpdateUserDTO, UpdatePasswordDTO } from '../../../common/dtos/user';
+import { IAuthService } from '../../../common/interfaces/auth-interfaces';
 import { IEmailService } from '../../../common/interfaces/mail-interfaces';
 import { IUserFindBy, IUserService } from '../../../common/interfaces/user-interfaces';
 import { IUserRepository } from '../../../common/interfaces/user-interfaces/user-repository.interface';
@@ -25,6 +26,9 @@ export class UserService implements IUserService {
 
   @Inject(IEmailService)
   private readonly emailService: IEmailService;
+
+  @Inject(forwardRef(() => IAuthService))
+  private readonly authService: IAuthService;
 
   constructor() {}
 
@@ -66,7 +70,8 @@ export class UserService implements IUserService {
     let user = await this.userRepository.findBy({ email });
     if (!user) throw new NotFoundException('Unregistered Email');
 
-    await this.emailService.sendRecoverPasswordEmail(this.userMapper.fromEntity(user));
+    const tokenDTO = await this.authService.login(user);
+    await this.emailService.sendRecoverPasswordEmail(this.userMapper.fromEntity(user), tokenDTO.token);
     return 'Email successfully sent!';
   }
 

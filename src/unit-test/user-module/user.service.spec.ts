@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CreateUserDTO } from '../../common/dtos/user/create-user.dto';
 import { UpdatePasswordDTO } from '../../common/dtos/user/update-password.dto';
 import { UpdateUserDTO } from '../../common/dtos/user/update-user.dto';
-import { UserDTO } from '../../common/dtos/user/user.dto';
 import { IEmailService } from '../../common/interfaces/mail-interfaces';
 import { User } from '../../modules/user/domain/User.entity';
 import { IUserRepository } from '../../common/interfaces/user-interfaces/user-repository.interface';
@@ -11,11 +10,14 @@ import { UpdatePasswordMapper } from '../../modules/user/mappers/update-password
 import { UpdateUserMapper } from '../../modules/user/mappers/update-user.mapper';
 import { UserMapper } from '../../modules/user/mappers/user.mapper';
 import { UserService } from '../../modules/user/services/user.service';
+import { IAuthService } from '../../common/interfaces/auth-interfaces';
+import { TokenDTO } from '../../common/dtos/auth';
 
 describe('UserService', () => {
   let userService: UserService;
   let userRepository: IUserRepository;
   let emailService: IEmailService;
+  let authService: IAuthService;
 
   const mockUserRepository = {
     find: jest.fn((id) => Promise.resolve(new User())),
@@ -28,6 +30,10 @@ describe('UserService', () => {
       return Promise.resolve(user);
     }),
     findAll: jest.fn(),
+  };
+
+  const mockAuthService = {
+    login: jest.fn(async (user) => Promise.resolve(new TokenDTO(''))),
   };
 
   const mockEmailService = {
@@ -45,6 +51,10 @@ describe('UserService', () => {
           provide: IEmailService,
           useValue: mockEmailService,
         },
+        {
+          provide: IAuthService,
+          useValue: mockAuthService,
+        },
         UserMapper,
         UpdateUserMapper,
         CreateUserMapper,
@@ -55,6 +65,7 @@ describe('UserService', () => {
     userService = module.get<UserService>(UserService);
     userRepository = module.get<IUserRepository>(IUserRepository);
     emailService = module.get<IEmailService>(IEmailService);
+    authService = module.get<IAuthService>(IAuthService);
   });
 
   it('should be defined', () => {
@@ -253,7 +264,8 @@ describe('UserService', () => {
       const message = await userService.recoverPassword('any_id');
       expect(userRepository).toBeDefined();
       expect(userRepository.findBy).toHaveReturned();
-      expect(emailService).toBeDefined();
+      expect(emailService.sendRecoverPasswordEmail).toBeCalled();
+      expect(authService.login).toBeCalled();
       expect(message).toEqual('Email successfully sent!');
     });
   });

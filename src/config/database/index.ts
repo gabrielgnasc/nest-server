@@ -11,8 +11,8 @@ export function getDatabaseSettings(configService: ConfigService) {
     database: configService.get('TYPEORM_DATABASE'),
     entities: ['dist/**/*.entity.js'],
     migrations: ['dist/**/*.migration.js'],
-    synchronize: true,
-    logging: true,
+    migrationsRun: true,
+    logging: false,
   } as TypeOrmModuleOptions;
 
   return configOptions;
@@ -28,6 +28,7 @@ export function getTestDatabaseSettings() {
     name: 'testConnection',
     entities: ['../../**/*.entity.{ts,js}'],
     migrations: ['../../**/*.migration.{ts,js}'],
+    migrationsRun: true,
   } as TypeOrmModuleOptions;
 
   return configOptions;

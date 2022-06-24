@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Global, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
@@ -13,27 +13,29 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { UserMapper } from '../user/mappers';
 
 const authService = {
-	provide: IAuthService,
-	useClass: AuthService,
+  provide: IAuthService,
+  useClass: AuthService,
 };
 
 const jwtService = {
-	provide: IJwtService,
-	useClass: JwtService,
+  provide: IJwtService,
+  useClass: JwtService,
 };
+
+@Global()
 @Module({
-	imports: [
-		UserModule,
-		PassportModule.register({ session: true, defaultStrategy: 'jwt' }),
-		JwtModule.registerAsync({
-			imports: [ConfigModule],
-			inject: [ConfigService],
-			useFactory: (configService: ConfigService) => getJWTSettings(configService),
-		}),
-	],
-	controllers: [AuthController],
-	providers: [authService, LocaStrategy, jwtService, JwtStrategy, ConfigService, UserMapper],
-	exports: [authService],
+  imports: [
+    PassportModule.register({ session: true, defaultStrategy: 'jwt' }),
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => getJWTSettings(configService),
+    }),
+    forwardRef(() => UserModule),
+  ],
+  controllers: [AuthController],
+  providers: [authService, LocaStrategy, jwtService, JwtStrategy, ConfigService, UserMapper],
+  exports: [authService],
 })
 export class AuthModule {}
 

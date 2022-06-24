@@ -1,15 +1,11 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserDTO } from '../../common/dtos/user';
-import { IAuthService } from '../../common/interfaces/auth-interfaces/auth-service.interface';
 import { MailService } from '../../modules/mail/services/mail.service';
 
 describe('ServicesService', () => {
   let mailService: MailService;
 
-  const mockAuthService = {
-    getTokenByUser: jest.fn((dto) => 'any_token'),
-  };
   const mockMailerService = {
     sendMail: jest.fn((options) => Promise.resolve()),
   };
@@ -18,10 +14,6 @@ describe('ServicesService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         MailService,
-        {
-          provide: IAuthService,
-          useValue: mockAuthService,
-        },
         {
           provide: MailerService,
           useValue: mockMailerService,
@@ -43,18 +35,11 @@ describe('ServicesService', () => {
     user.name = 'any_name';
     user.login = 'any_login';
 
-    it('should throw an exception when authService is not available', async () => {
-      jest.spyOn(mockAuthService, 'getTokenByUser').mockImplementationOnce(() => {
-        throw new Error();
-      });
-      expect(mailService.sendRecoverPasswordEmail(user)).rejects.toThrowError();
-    });
-
     it('should throw an excepiton when dont have UserDTO parameter', async () => {
-      expect(mailService.sendRecoverPasswordEmail(undefined)).rejects.toThrowError();
+      expect(mailService.sendRecoverPasswordEmail(undefined, 'token')).rejects.toThrowError();
 
       try {
-        await mailService.sendRecoverPasswordEmail(undefined);
+        await mailService.sendRecoverPasswordEmail(undefined, 'token');
       } catch (error) {
         expect(error.status).toBe(500);
         expect(error.message).toEqual('User is required');
@@ -62,11 +47,9 @@ describe('ServicesService', () => {
     });
 
     it('should send a email if everything goes successfully', async () => {
-      await mailService.sendRecoverPasswordEmail(user);
+      await mailService.sendRecoverPasswordEmail(user, 'token');
 
       expect(mailService).toBeDefined();
-      expect(mockAuthService.getTokenByUser).toBeCalledWith(user);
-      expect(mockAuthService.getTokenByUser).toHaveReturnedWith('any_token');
       expect(mockMailerService.sendMail).toHaveBeenCalled();
     });
   });

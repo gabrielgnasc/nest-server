@@ -295,7 +295,6 @@ describe('UserController', () => {
       const spy = jest.spyOn(userController, 'recoverPassword');
       await userController.recoverPassword({ email: 'any_email@mail.com' });
       expect(spy).toHaveBeenCalledWith({ email: 'any_email@mail.com' });
-      expect(userService.recoverPassword).toHaveBeenCalledWith('any_email@mail.com');
       expect(userService.recoverPassword).toBeDefined();
     });
   });
