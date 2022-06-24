@@ -10,29 +10,30 @@ import { IAuthService } from '../../common/interfaces/auth-interfaces';
 import { LocaStrategy } from './strategies/local.strategy';
 import { IJwtService } from '../../common/interfaces/auth-interfaces/jwt-service.interface';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { UserMapper } from '../user/mappers';
 
 const authService = {
-  provide: IAuthService,
-  useClass: AuthService,
+	provide: IAuthService,
+	useClass: AuthService,
 };
 
 const jwtService = {
-  provide: IJwtService,
-  useClass: JwtService,
+	provide: IJwtService,
+	useClass: JwtService,
 };
 @Module({
-  imports: [
-    UserModule,
-    PassportModule.register({ session: true, defaultStrategy: 'jwt' }),
-    JwtModule.registerAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => getJWTSettings(configService),
-    }),
-  ],
-  controllers: [AuthController],
-  providers: [authService, LocaStrategy, jwtService, JwtStrategy, ConfigService],
-  exports: [authService],
+	imports: [
+		UserModule,
+		PassportModule.register({ session: true, defaultStrategy: 'jwt' }),
+		JwtModule.registerAsync({
+			imports: [ConfigModule],
+			inject: [ConfigService],
+			useFactory: (configService: ConfigService) => getJWTSettings(configService),
+		}),
+	],
+	controllers: [AuthController],
+	providers: [authService, LocaStrategy, jwtService, JwtStrategy, ConfigService, UserMapper],
+	exports: [authService],
 })
 export class AuthModule {}
 
