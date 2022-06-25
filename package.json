@@ -91,7 +91,6 @@
         ],
         "coverageDirectory": "../coverage",
         "testEnvironment": "node",
-        "collectCoverage": true,
         "coveragePathIgnorePatterns": [
             "<rootDir>/config/"
         ]

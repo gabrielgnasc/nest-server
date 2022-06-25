@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TokenDTO } from '../../common/dtos/auth';
 import { UserDTO } from '../../common/dtos/user';
+import { MessagesHelper } from '../../common/helpers';
 import { IJwtService } from '../../common/interfaces/auth-interfaces';
 import { IUserService } from '../../common/interfaces/user-interfaces';
 import { AuthService } from '../../modules/auth/services/auth.service';
@@ -62,7 +63,7 @@ describe('AuthService', () => {
         const token = await authService.login(undefined);
       } catch (error) {
         expect(error.status).toBe(500);
-        expect(error.message).toEqual('User is required');
+        expect(error.message).toEqual(MessagesHelper.USER_REQUIRED);
       }
     });
 
@@ -71,7 +72,7 @@ describe('AuthService', () => {
         const token = await authService.login({} as UserDTO);
       } catch (error) {
         expect(error.status).toBe(500);
-        expect(error.message).toEqual('User is required');
+        expect(error.message).toEqual(MessagesHelper.USER_REQUIRED);
       }
     });
 

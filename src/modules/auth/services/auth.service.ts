@@ -1,6 +1,7 @@
 import { Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { TokenDTO } from '../../../common/dtos/auth';
 import { UserDTO } from '../../../common/dtos/user';
+import { MessagesHelper } from '../../../common/helpers';
 import { IAuthService, IJwtService } from '../../../common/interfaces/auth-interfaces';
 import { IUserService } from '../../../common/interfaces/user-interfaces';
 import { User } from '../../user/domain/User.entity';
@@ -14,7 +15,7 @@ export class AuthService implements IAuthService {
   private readonly jwtService: IJwtService;
 
   async login(data: UserDTO): Promise<TokenDTO> {
-    if (!data || !data.id) throw new InternalServerErrorException('User is required');
+    if (!data || !data.id) throw new InternalServerErrorException(MessagesHelper.USER_REQUIRED);
     const payload = { sub: data.id, login: data.login };
     const tokenString = this.jwtService.sign(payload, { secret: process.env.JWT_SECRET_KEY });
     return new TokenDTO(tokenString);
