@@ -12,6 +12,7 @@ import { UserMapper } from '../../modules/user/mappers/user.mapper';
 import { UserService } from '../../modules/user/services/user.service';
 import { IAuthService } from '../../common/interfaces/auth-interfaces';
 import { TokenDTO } from '../../common/dtos/auth';
+import { IUserFindBy } from '../../common/interfaces/user-interfaces';
 
 describe('UserService', () => {
   let userService: UserService;
@@ -267,6 +268,28 @@ describe('UserService', () => {
       expect(emailService.sendRecoverPasswordEmail).toBeCalled();
       expect(authService.login).toBeCalled();
       expect(message).toEqual('Email successfully sent!');
+    });
+  });
+
+  describe('Find By', () => {
+    const userFindBy: IUserFindBy = {
+      email: 'any_email',
+      id: 'any_id',
+    };
+
+    it('should repository throw an exception', async () => {
+      jest.spyOn(userRepository, 'findBy').mockRejectedValueOnce(new Error());
+
+      expect(userService.findBy(userFindBy)).rejects.toThrowError();
+    });
+
+    it('should return UserDTO if user updated successfully', async () => {
+      jest.spyOn(userRepository, 'findBy').mockImplementationOnce((dto) => Promise.resolve(new User()));
+
+      const user = await userService.findBy(userFindBy);
+      expect(userRepository).toBeDefined();
+      expect(userRepository.findBy).toHaveReturned();
+      expect(user).toBeInstanceOf(User);
     });
   });
 });

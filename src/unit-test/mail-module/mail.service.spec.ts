@@ -48,7 +48,15 @@ describe('ServicesService', () => {
 
     it('should send a email if everything goes successfully', async () => {
       await mailService.sendRecoverPasswordEmail(user, 'token');
+      process.env.RECOVER_PASSWORD_URL = 'http://my-url/';
+      expect(mailService).toBeDefined();
+      expect(mockMailerService.sendMail).toHaveBeenCalled();
+    });
 
+    it('should send a email if everything goes successfully (without http) ', async () => {
+      await mailService.sendRecoverPasswordEmail(user, 'token');
+
+      process.env.RECOVER_PASSWORD_URL = 'my-url/';
       expect(mailService).toBeDefined();
       expect(mockMailerService.sendMail).toHaveBeenCalled();
     });

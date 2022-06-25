@@ -6,7 +6,7 @@ import { getJWTSettings } from '../../config/auth';
 import { UserModule } from '../user/user.module';
 import { AuthService } from './services/auth.service';
 import { AuthController } from './controller/auth.controller';
-import { IAuthService } from '../../common/interfaces/auth-interfaces';
+import { IAuthService, IGenericStrategy } from '../../common/interfaces/auth-interfaces';
 import { LocaStrategy } from './strategies/local.strategy';
 import { IJwtService } from '../../common/interfaces/auth-interfaces/jwt-service.interface';
 import { JwtStrategy } from './strategies/jwt.strategy';
@@ -22,6 +22,16 @@ const jwtService = {
   useClass: JwtService,
 };
 
+const localStategy = {
+  provide: IGenericStrategy,
+  useClass: LocaStrategy,
+};
+
+const jwtStategy = {
+  provide: IGenericStrategy,
+  useClass: JwtStrategy,
+};
+
 @Global()
 @Module({
   imports: [
@@ -34,7 +44,7 @@ const jwtService = {
     forwardRef(() => UserModule),
   ],
   controllers: [AuthController],
-  providers: [authService, LocaStrategy, jwtService, JwtStrategy, ConfigService, UserMapper],
+  providers: [authService, localStategy, jwtService, jwtStategy, ConfigService, UserMapper],
   exports: [authService],
 })
 export class AuthModule {}

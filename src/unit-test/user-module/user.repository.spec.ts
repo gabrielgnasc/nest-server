@@ -136,8 +136,23 @@ describe('UserRespository', () => {
       expect(userRepositoryService.findBy({ id: 'any_id' })).rejects.toThrowError();
     });
 
-    it('should return an User on create', async () => {
+    it('should return an User method OR', async () => {
+      await userRepositoryService.findBy({ email: 'anyemail@mail.com', id: 'any_id', method: 'OR' });
+      expect(mockedRepository.findOne).toHaveReturned();
+    });
+
+    it('should return an User method AND', async () => {
+      await userRepositoryService.findBy({ email: 'anyemail@mail.com', id: 'any_id', method: 'AND' });
+      expect(mockedRepository.findOne).toHaveReturned();
+    });
+
+    it('should return an User method AND (without AND parameter)', async () => {
       await userRepositoryService.findBy({ email: 'anyemail@mail.com', id: 'any_id' });
+      expect(mockedRepository.findOne).toHaveReturned();
+    });
+
+    it('should return an User when no param', async () => {
+      await userRepositoryService.findBy(undefined);
       expect(mockedRepository.findOne).toHaveReturned();
     });
   });
