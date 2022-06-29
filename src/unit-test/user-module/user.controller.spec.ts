@@ -7,7 +7,7 @@ import { UpdatePasswordDTO } from '../../common/dtos/user/update-password.dto';
 import { IUserService } from '../../common/interfaces/user-interfaces/user-service.interface';
 import { UserMapper } from '../../modules/user/mappers';
 import { RequestDTO } from '../../common/dtos/auth';
-import { MessagesHelper } from '../../common/helpers';
+import { ErrorMessageHelper } from '../../common/helpers';
 
 describe('UserController', () => {
   let userController: UserController;
@@ -71,7 +71,7 @@ describe('UserController', () => {
 
     it('should status 404 when id dont exists', async () => {
       jest.spyOn(userService, 'findById').mockImplementationOnce(() => {
-        throw new NotFoundException(MessagesHelper.USER_DONT_EXISTS);
+        throw new NotFoundException(ErrorMessageHelper.USER_DONT_EXISTS);
       });
 
       try {
@@ -130,7 +130,7 @@ describe('UserController', () => {
 
     it('should status 406 when email already exists', async () => {
       jest.spyOn(userService, 'create').mockImplementationOnce(() => {
-        throw new NotAcceptableException(MessagesHelper.EMAIL_ALREADY_USED);
+        throw new NotAcceptableException(ErrorMessageHelper.EMAIL_ALREADY_USED);
       });
 
       try {
@@ -171,7 +171,7 @@ describe('UserController', () => {
 
     it('should return status 406 when email updated already in use', async () => {
       const spy = jest.spyOn(userService, 'update').mockImplementationOnce(() => {
-        throw new NotAcceptableException(MessagesHelper.EMAIL_ALREADY_USED);
+        throw new NotAcceptableException(ErrorMessageHelper.EMAIL_ALREADY_USED);
       });
 
       try {
@@ -282,7 +282,7 @@ describe('UserController', () => {
 
     it('should return 406 if email is not registered', async () => {
       jest.spyOn(userService, 'recoverPassword').mockImplementationOnce(() => {
-        throw new NotAcceptableException(MessagesHelper.UNREGISTERED_EMAIL);
+        throw new NotAcceptableException(ErrorMessageHelper.UNREGISTERED_EMAIL);
       });
 
       try {

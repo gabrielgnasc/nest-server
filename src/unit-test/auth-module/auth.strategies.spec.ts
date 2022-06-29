@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { MessagesHelper } from '../../common/helpers';
+import { ErrorMessageHelper } from '../../common/helpers';
 import { IAuthService, IGenericStrategy } from '../../common/interfaces/auth-interfaces';
 import { JwtStrategy } from '../../modules/auth/strategies/jwt.strategy';
 import { LocaStrategy } from '../../modules/auth/strategies/local.strategy';
@@ -50,7 +50,7 @@ describe('Strategies JWT and Local', () => {
         await localStrategy.validate('any_login', 'any_password');
       } catch (error) {
         expect(error.status).toBe(401);
-        expect(error.message).toEqual(MessagesHelper.PASSWORD_OR_EMAIL_INVALID);
+        expect(error.message).toEqual(ErrorMessageHelper.PASSWORD_OR_EMAIL_INVALID);
       }
     });
 

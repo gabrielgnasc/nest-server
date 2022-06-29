@@ -1,7 +1,7 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserDTO } from '../../common/dtos/user';
-import { MessagesHelper } from '../../common/helpers';
+import { ErrorMessageHelper } from '../../common/helpers';
 import { MailService } from '../../modules/mail/services/mail.service';
 
 describe('ServicesService', () => {
@@ -43,7 +43,7 @@ describe('ServicesService', () => {
         await mailService.sendRecoverPasswordEmail(undefined, 'token');
       } catch (error) {
         expect(error.status).toBe(500);
-        expect(error.message).toEqual(MessagesHelper.USER_REQUIRED);
+        expect(error.message).toEqual(ErrorMessageHelper.USER_REQUIRED);
       }
     });
 
@@ -85,7 +85,7 @@ describe('ServicesService', () => {
         await mailService.sendMail(undefined);
       } catch (error) {
         expect(error.status).toBe(500);
-        expect(error.message).toEqual(MessagesHelper.PARAMETERS_REQUIRED);
+        expect(error.message).toEqual(ErrorMessageHelper.PARAMETERS_REQUIRED);
       }
     });
 

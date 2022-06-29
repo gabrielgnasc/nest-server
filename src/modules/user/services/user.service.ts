@@ -1,6 +1,6 @@
 import { Inject, forwardRef, Injectable, NotAcceptableException, NotFoundException } from '@nestjs/common';
 import { CreateUserDTO, UpdateUserDTO, UpdatePasswordDTO } from '../../../common/dtos/user';
-import { MessagesHelper } from '../../../common/helpers';
+import { ErrorMessageHelper } from '../../../common/helpers';
 import { IAuthService } from '../../../common/interfaces/auth-interfaces';
 import { IEmailService } from '../../../common/interfaces/mail-interfaces';
 import { IUserFindBy, IUserService } from '../../../common/interfaces/user-interfaces';
@@ -36,8 +36,8 @@ export class UserService implements IUserService {
   async create(data: CreateUserDTO): Promise<User> {
     let user = await this.userRepository.findBy({ email: data.email, login: data.login, method: 'OR' });
 
-    if (user?.email === data.email) throw new NotAcceptableException(MessagesHelper.EMAIL_ALREADY_USED);
-    if (user?.login === data.login) throw new NotAcceptableException(MessagesHelper.LOGIN_ALREADY_USED);
+    if (user?.email === data.email) throw new NotAcceptableException(ErrorMessageHelper.EMAIL_ALREADY_USED);
+    if (user?.login === data.login) throw new NotAcceptableException(ErrorMessageHelper.LOGIN_ALREADY_USED);
 
     return await this.userRepository.create(this.createUserMapper.toEntity(data));
   }
@@ -45,7 +45,7 @@ export class UserService implements IUserService {
   async update(id: string, data: UpdateUserDTO): Promise<User> {
     const users = await this.userRepository.findAll({ email: data.email, id: id, method: 'OR' });
 
-    if (users.length > 1) throw new NotAcceptableException(MessagesHelper.EMAIL_ALREADY_USED);
+    if (users.length > 1) throw new NotAcceptableException(ErrorMessageHelper.EMAIL_ALREADY_USED);
 
     return await this.userRepository.update(id, this.updateUserMapper.toEntity(data));
   }
@@ -53,7 +53,7 @@ export class UserService implements IUserService {
   async findById(id: string): Promise<User> {
     const user = await this.userRepository.find(id);
 
-    if (!user) throw new NotFoundException(MessagesHelper.USER_DONT_EXISTS);
+    if (!user) throw new NotFoundException(ErrorMessageHelper.USER_DONT_EXISTS);
 
     return user;
   }
@@ -61,20 +61,20 @@ export class UserService implements IUserService {
   async updatePassword(id: string, data: UpdatePasswordDTO): Promise<void> {
     let user = await this.userRepository.find(id);
 
-    if (!user) throw new NotFoundException(MessagesHelper.USER_DONT_EXISTS);
+    if (!user) throw new NotFoundException(ErrorMessageHelper.USER_DONT_EXISTS);
     if (!user.newPasswordIsValid(data.newPassword))
-      throw new NotAcceptableException(MessagesHelper.NEW_PASSWORD_IS_NOT_VALID);
+      throw new NotAcceptableException(ErrorMessageHelper.NEW_PASSWORD_IS_NOT_VALID);
 
     user = await this.userRepository.update(id, this.updatePasswordMapper.toEntity(data));
   }
 
   async recoverPassword(email: string): Promise<string> {
     let user = await this.userRepository.findBy({ email });
-    if (!user) throw new NotFoundException(MessagesHelper.UNREGISTERED_EMAIL);
+    if (!user) throw new NotFoundException(ErrorMessageHelper.UNREGISTERED_EMAIL);
 
     const tokenDTO = await this.authService.login(user);
     await this.emailService.sendRecoverPasswordEmail(this.userMapper.fromEntity(user), tokenDTO.token);
-    return MessagesHelper.EMAIL_SUCCESSFULLY_SENT;
+    return ErrorMessageHelper.EMAIL_SUCCESSFULLY_SENT;
   }
 
   async findBy(data?: IUserFindBy): Promise<User> {

@@ -13,7 +13,7 @@ import { UserService } from '../../modules/user/services/user.service';
 import { IAuthService } from '../../common/interfaces/auth-interfaces';
 import { TokenDTO } from '../../common/dtos/auth';
 import { IUserFindBy } from '../../common/interfaces/user-interfaces';
-import { MessagesHelper } from '../../common/helpers';
+import { ErrorMessageHelper } from '../../common/helpers';
 
 describe('UserService', () => {
   let userService: UserService;
@@ -124,7 +124,7 @@ describe('UserService', () => {
         await userService.create(createUserDTO);
       } catch (error) {
         expect(error.status).toBe(406);
-        expect(error.message).toEqual(MessagesHelper.EMAIL_ALREADY_USED);
+        expect(error.message).toEqual(ErrorMessageHelper.EMAIL_ALREADY_USED);
       }
     });
 
@@ -137,7 +137,7 @@ describe('UserService', () => {
         await userService.create(createUserDTO);
       } catch (error) {
         expect(error.status).toBe(406);
-        expect(error.message).toEqual(MessagesHelper.EMAIL_ALREADY_USED);
+        expect(error.message).toEqual(ErrorMessageHelper.LOGIN_ALREADY_USED);
       }
     });
 
@@ -204,7 +204,7 @@ describe('UserService', () => {
         await userService.updatePassword('any_id', updatePasswordDTO);
       } catch (error) {
         expect(error.status).toBe(404);
-        expect(error.message).toEqual(MessagesHelper.USER_DONT_EXISTS);
+        expect(error.message).toEqual(ErrorMessageHelper.USER_DONT_EXISTS);
       }
     });
 
@@ -220,7 +220,7 @@ describe('UserService', () => {
         await userService.updatePassword('any_id', updatePasswordDTO);
       } catch (error) {
         expect(error.status).toBe(406);
-        expect(error.message).toEqual(MessagesHelper.NEW_PASSWORD_IS_NOT_VALID);
+        expect(error.message).toEqual(ErrorMessageHelper.NEW_PASSWORD_IS_NOT_VALID);
       }
     });
 
@@ -252,7 +252,7 @@ describe('UserService', () => {
         await userService.recoverPassword('any_amail@mail.com');
       } catch (error) {
         expect(error.status).toBe(404);
-        expect(error.message).toEqual(MessagesHelper.UNREGISTERED_EMAIL);
+        expect(error.message).toEqual(ErrorMessageHelper.UNREGISTERED_EMAIL);
       }
     });
 
@@ -268,7 +268,7 @@ describe('UserService', () => {
       expect(userRepository.findBy).toHaveReturned();
       expect(emailService.sendRecoverPasswordEmail).toBeCalled();
       expect(authService.login).toBeCalled();
-      expect(message).toEqual(MessagesHelper.EMAIL_SUCCESSFULLY_SENT);
+      expect(message).toEqual(ErrorMessageHelper.EMAIL_SUCCESSFULLY_SENT);
     });
   });
 

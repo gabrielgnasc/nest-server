@@ -2,6 +2,10 @@ import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 
 export function getDatabaseSettings(configService: ConfigService) {
+  if (configService.get('NODE_ENV') === 'test') {
+    return getTestDatabaseSettings();
+  }
+
   const configOptions: TypeOrmModuleOptions = {
     type: configService.get('TYPEORM_CONNECTION'),
     host: configService.get('TYPEORM_HOST'),
@@ -21,14 +25,10 @@ export function getDatabaseSettings(configService: ConfigService) {
 export function getTestDatabaseSettings() {
   const configOptions: TypeOrmModuleOptions = {
     type: 'sqlite',
-    database: ':memory:',
-    dropSchema: true,
-    synchronize: true,
-    logging: false,
+    database: './test.sqlite',
     name: 'testConnection',
-    entities: ['../../**/*.entity.{ts,js}'],
-    migrations: ['../../**/*.migration.{ts,js}'],
-    migrationsRun: true,
+    entities: ['./**/*.entity.ts'],
+    synchronize: true,
   } as TypeOrmModuleOptions;
 
   return configOptions;

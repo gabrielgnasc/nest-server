@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { LoginDTO, TokenDTO } from '../../common/dtos/auth';
 import { UserDTO } from '../../common/dtos/user';
-import { MessagesHelper } from '../../common/helpers';
+import { ErrorMessageHelper } from '../../common/helpers';
 import { IAuthService } from '../../common/interfaces/auth-interfaces';
 import { IUserService } from '../../common/interfaces/user-interfaces';
 import { AuthController } from '../../modules/auth/controller/auth.controller';
@@ -57,7 +57,7 @@ describe('AuthController', () => {
         await authController.login(undefined, login);
       } catch (error) {
         expect(error.status).toBe(400);
-        expect(error.message).toEqual(MessagesHelper.USER_REQUIRED);
+        expect(error.message).toEqual(ErrorMessageHelper.USER_REQUIRED);
       }
     });
 
@@ -76,7 +76,7 @@ describe('AuthController', () => {
         await authController.getUserByToken(undefined);
       } catch (error) {
         expect(error.status).toBe(400);
-        expect(error.message).toEqual(MessagesHelper.INVALID_TOKEN);
+        expect(error.message).toEqual(ErrorMessageHelper.INVALID_TOKEN);
       }
     });
 

@@ -22,11 +22,6 @@ const jwtService = {
   useClass: JwtService,
 };
 
-const localStategy = {
-  provide: IGenericStrategy,
-  useClass: LocaStrategy,
-};
-
 const jwtStategy = {
   provide: IGenericStrategy,
   useClass: JwtStrategy,
@@ -44,7 +39,7 @@ const jwtStategy = {
     forwardRef(() => UserModule),
   ],
   controllers: [AuthController],
-  providers: [authService, localStategy, jwtService, jwtStategy, ConfigService, UserMapper],
+  providers: [authService, jwtService, LocaStrategy, jwtStategy, ConfigService, UserMapper],
   exports: [authService],
 })
 export class AuthModule {}

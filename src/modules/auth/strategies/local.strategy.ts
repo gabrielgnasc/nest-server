@@ -1,7 +1,7 @@
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-local';
-import { MessagesHelper } from '../../../common/helpers';
+import { ErrorMessageHelper } from '../../../common/helpers';
 import { IAuthService } from '../../../common/interfaces/auth-interfaces';
 import { IGenericStrategy } from '../../../common/interfaces/auth-interfaces';
 
@@ -18,7 +18,7 @@ export class LocaStrategy extends PassportStrategy(Strategy, 'local') implements
 
   async validate(login: string, password: string) {
     const user = await this.authService.validateUser(login, password);
-    if (!user) throw new UnauthorizedException(MessagesHelper.PASSWORD_OR_EMAIL_INVALID);
+    if (!user) throw new UnauthorizedException(ErrorMessageHelper.PASSWORD_OR_EMAIL_INVALID);
     return user;
   }
 }
