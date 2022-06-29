@@ -25,10 +25,11 @@ export function getDatabaseSettings(configService: ConfigService) {
 export function getTestDatabaseSettings() {
   const configOptions: TypeOrmModuleOptions = {
     type: 'sqlite',
-    database: './test.sqlite',
+    database: 'e2e/database/test.sqlite',
     name: 'testConnection',
     entities: ['./**/*.entity.ts'],
     synchronize: true,
+    dropSchema: true,
   } as TypeOrmModuleOptions;
 
   return configOptions;

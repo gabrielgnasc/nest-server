@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
-import { AppModule } from '../../src/app.module';
-import { DTOValidationMessageHelper, ErrorMessageHelper } from '../../src/common/helpers';
-import { UserDTO } from '../../src/common/dtos/user';
+import { AppModule } from '../src/app.module';
+import { DTOValidationMessageHelper, ErrorMessageHelper } from '../src/common/helpers';
+import { UserDTO } from '../src/common/dtos/user';
 
 describe('UserController (e2e)', () => {
   let app: INestApplication;
@@ -26,8 +26,9 @@ describe('UserController (e2e)', () => {
     return req.get(url).set('Authorization', `Bearer ${token}`);
   };
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     process.env.NODE_ENV = 'test';
+
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
@@ -35,9 +36,10 @@ describe('UserController (e2e)', () => {
     app = moduleFixture.createNestApplication();
     app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
     await app.init();
-
     req = request(app.getHttpServer());
   });
+
+  beforeEach(async () => {});
 
   describe('Route: user/  Method: Create - POST', () => {
     it('should BadRequest when all params are empty', async () => {
