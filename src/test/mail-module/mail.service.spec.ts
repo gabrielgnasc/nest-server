@@ -1,7 +1,7 @@
-import { MailerService } from '@nestjs-modules/mailer';
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserDTO } from '../../common/dtos/user';
 import { ErrorMessageHelper } from '../../common/helpers';
+import { IMailer, ISendMail } from '../../common/interfaces/mail-interfaces';
 import { MailService } from '../../modules/mail/services/mail.service';
 
 describe('ServicesService', () => {
@@ -16,7 +16,7 @@ describe('ServicesService', () => {
       providers: [
         MailService,
         {
-          provide: MailerService,
+          provide: IMailer,
           useValue: mockMailerService,
         },
       ],
@@ -90,10 +90,20 @@ describe('ServicesService', () => {
     });
 
     it('should send a email if everything goes successfully', async () => {
+      let lastMail: ISendMail;
+
+      mockMailerService.sendMail.mockImplementation((options) => {
+        lastMail = options;
+        return Promise.resolve(null);
+      });
       await mailService.sendMail(mail);
 
       expect(mailService).toBeDefined();
       expect(mockMailerService.sendMail).toHaveBeenCalled();
+      expect(lastMail.to).toBe(mail.to);
+      expect(lastMail.subject).toBe(mail.subject);
+      expect(lastMail.template).toBe(mail.template);
+      expect(lastMail.context).toBe(mail.context);
     });
   });
 });

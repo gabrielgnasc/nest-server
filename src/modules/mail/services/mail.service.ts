@@ -1,14 +1,13 @@
-import { MailerService } from '@nestjs-modules/mailer';
 import { Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { UserDTO } from '../../../common/dtos/user';
 import { ErrorMessageHelper } from '../../../common/helpers';
-import { IEmailService } from '../../../common/interfaces/mail-interfaces';
+import { IEmailService, IMailer } from '../../../common/interfaces/mail-interfaces';
 import { ISendMail } from '../../../common/interfaces/mail-interfaces/send-email.dto';
 
 @Injectable()
 export class MailService implements IEmailService {
-  @Inject(MailerService)
-  private readonly mailerService: MailerService;
+  @Inject(IMailer)
+  private readonly mailerService: IMailer;
 
   async sendRecoverPasswordEmail(user: UserDTO, token: string): Promise<void> {
     if (!user) throw new InternalServerErrorException(ErrorMessageHelper.USER_REQUIRED);
