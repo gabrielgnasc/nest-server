@@ -1,36 +1,25 @@
-## Server Nest
+## Functional Requirements
 
-## Requisitos Funcionais
+- [x] Authentication:
 
-- [x] Autenticação:
+  - [x] User must be able to authenticate with login and password;
+  - [x] Authentication must return a JWT token;
+  - [x] The user should be able to retrieve their data only with the token, if it is still valid;
 
-  - [x] O usuário deve poder fazer autenticação com login e senha
-  - [x] A autenticação deve retornar um token JWT
-  - [x] O usuário deve conseguir recuperar seus dados somente com o token, caso ainda seja válido;
+- [x] User:
 
-- [x] Usuário:
-
-  - [x] O usuário deve conseguir criar uma conta;
-  - [x] O usuário deve conseguir alterar seu nome e email;
-  - [x] O usuário deve conseguir alterar sua senha;
-  - [x] O usuário deve conseguir recuperar sua senha pelo e-mail;
+  - [x] The user must be able to create an account;
+  - [x] The user must be able to change their name and email;
+  - [x] The user must be able to change their password;
+  - [x] The user must be able to recover their password by email;
 
 ## Regras de negócio
 
-- [x] Autenticação:
+- [x] Authentication:
 
-  - [x] O token do usuário deve ter duração máxima de 30 min
+  - [x] User token must have a maximum duration of 30 min
 
 - [x] Usuário:
 
-  - [x] Somente o usuário autenticado poderá fazer alterações, sendo estas somente em seu perfil;
-  - [x] A recuperação de senha ocorrerá por uma URL enviada via email onde, a mesma possui um token com duração de 30 minutos, ao qual o usuário poderá alterar sua senha;
-
-## Requisitos não funcionais
-
-- Nest.js
-- TypeORM
-- SOLID
-- JWT
-- TDD
-- Docker
+  - [x] Only the authenticated user will be able to make changes, being these only in their profile;
+  - [x] Password recovery will take place via a URL sent via email where it has a token with a duration of 30 minutes, to which the user can change their password;
