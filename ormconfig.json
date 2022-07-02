@@ -1,0 +1,12 @@
+[{
+    "type": "mysql",
+    "host": "localhost",
+    "port": "3306",
+    "username": "nest",
+    "password": "nest",
+    "database": "nest",
+    "entities": ["dist/**/*.entity.js"],
+    "migrations": ["dist/**/*.migration.js"],
+    "synchronize": true,
+    "logging": true
+}]
