@@ -1,5 +1,5 @@
 export const ErrorMessageHelper = {
-  PASSWORD_OR_EMAIL_INVALID: 'E-mail or password invalid',
+  PASSWORD_OR_EMAIL_INVALID: 'Login or password invalid',
   USER_REQUIRED: 'User is required',
   PARAMETERS_REQUIRED: 'Parameters are required',
   INVALID_TOKEN: 'Invalid Token',

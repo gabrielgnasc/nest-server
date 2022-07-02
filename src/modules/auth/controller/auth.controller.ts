@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, Inject, Post, Request, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, HttpCode, Inject, Post, Request, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LoginDTO, RequestDTO, TokenDTO } from '../../../common/dtos/auth';
 import { UserDTO } from '../../../common/dtos/user';
@@ -24,6 +24,7 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @ApiResponse({ status: 200, type: TokenDTO })
   @ApiOperation({ description: 'Authenticate user in application', summary: 'Authenticate' })
+  @HttpCode(200)
   async login(@Request() req: any, @Body() LoginDTO: LoginDTO): Promise<TokenDTO> {
     if (!req?.user) throw new BadRequestException(ErrorMessageHelper.USER_REQUIRED);
     return await this.authService.login(req.user);
@@ -34,6 +35,7 @@ export class AuthController {
   @ApiResponse({ status: 200, type: UserDTO })
   @ApiOperation({ description: 'Get user by token in header', summary: 'Find User By Token' })
   @ApiBearerAuth()
+  @HttpCode(200)
   async getUserByToken(@Request() req: RequestDTO): Promise<UserDTO> {
     if (!req?.user?.id) throw new BadRequestException(ErrorMessageHelper.INVALID_TOKEN);
     const user = await this.userService.findById(req.user.id);

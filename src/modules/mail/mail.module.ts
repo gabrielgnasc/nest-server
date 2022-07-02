@@ -12,7 +12,7 @@ const mailService = {
 
 const mailerService = {
   provide: IMailer,
-  useClass: MailerService,
+  useExisting: MailerService,
 };
 
 @Global()

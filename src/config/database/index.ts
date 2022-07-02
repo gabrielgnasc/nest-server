@@ -25,8 +25,8 @@ export function getDatabaseSettings(configService: ConfigService) {
 export function getTestDatabaseSettings() {
   const configOptions: TypeOrmModuleOptions = {
     type: 'sqlite',
-    database: 'e2e/database/test.sqlite',
-    name: 'testConnection',
+    database: ':memory:',
+    name: new Date().getTime().toString(),
     entities: ['./**/*.entity.ts'],
     synchronize: true,
     dropSchema: true,
