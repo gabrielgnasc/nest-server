@@ -9,7 +9,7 @@
     <p align="center">
     <a href="https://www.npmjs.com/package/nestjs-i18n" target="_blank"><img alt="npm version" src="https://img.shields.io/npm/v/nestjs-i18n" /></a>
     <a href="https://www.npmjs.com/package/nestjs-i18n" target="_blank"><img alt="NPM" src="https://img.shields.io/npm/l/nestjs-i18n" /></a>
-    <a href="https://github.com/gabrielgnasc/nest-server/actions/workflows/test.yaml" target="_blank"><img src="https://github.com/gabrielgnasc/nest-server/actions/workflows/test.yaml/badge.svg?branch=main" /></a>
+    <a href="https://github.com/gabrielgnasc/nest-server/actions/workflows/test.yml" target="_blank"><img src="https://github.com/gabrielgnasc/nest-server/actions/workflows/test.yml/badge.svg?branch=main" /></a>
      <a href="https://coveralls.io/github/gabrielgnasc/nest-server?branch=main" target="_blank"><img alt="coverage" src="https://coveralls.io/repos/github/gabrielgnasc/nest-server/badge.svg?branch=main" /></a>
 </p>
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
