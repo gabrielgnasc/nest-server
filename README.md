@@ -17,7 +17,7 @@ An initial application to build an api with JWT authentication, where it is poss
 
 ## API Operation
 
-- **Functional Requirements**: [Requirements](REQUIREMENTS.md)
+- **Functional Requirements**: [Requirements](./REQUIREMENTS.md)
 - **Api Documentation**: access the route http://localhost:3000/docs
 
 ## Tecnologies used
