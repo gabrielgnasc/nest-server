@@ -9,7 +9,7 @@ export function getDatabaseSettings(configService: ConfigService) {
   const configOptions: TypeOrmModuleOptions = {
     type: configService.get('TYPEORM_CONNECTION'),
     host: configService.get('TYPEORM_HOST'),
-    port: configService.get('TYPEORM_PORT'),
+    port: +configService.get('TYPEORM_PORT'),
     username: configService.get('TYPEORM_USERNAMME'),
     password: configService.get('TYPEORM_PASSWORD'),
     database: configService.get('TYPEORM_DATABASE'),
